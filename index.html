@@ -1,1007 +1,483 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Camilla Paschoal · Design de Social Media</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap">
-<style>
-:root{
-  --bg:#f7f7f7;
-  --card:#fff;
-  --ink:#3b3737;
-  --muted:#6a6565;
-  --coral:#991818;
-  --sun:#9dd3df;
-  --grape:#c9d1d3;
-  --line:#3b3737;
-  color-scheme:light;
-}
-
-* {
-  box-sizing:border-box;
-}
-
-html {
-  scroll-behavior:smooth;
-  scroll-padding-top:env(safe-area-inset-top,0px);
-}
-
-body {
-  margin:0;
-  background: linear-gradient(180deg, rgba(247, 247, 247, 0.95) 0%, rgba(247, 247, 247, 0.85) 50%, rgba(247, 247, 247, 0.95) 100%);
-  background-image: url('assets/background.jpg');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color:var(--ink);
-  font-family:"DM Sans",system-ui,sans-serif;
-  line-height:1.55;
-  overflow-x:hidden;
-  position: relative;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(247, 247, 247, 0.7) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(247, 247, 247, 0.6) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-h1,h2,h3 {
-  font-family:"Fredoka","DM Sans",system-ui,sans-serif;
-  line-height:1.1;
-  margin:0;
-}
-
-.wrap {
-  max-width:1000px;
-  margin:0 auto;
-  padding:0 20px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* ANIMAÇÕES PRINCIPAIS */
-/* ════════════════════════════════════════════════════════════════ */
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-40px);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-60px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(60px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.85) rotateX(20deg);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) rotateX(0deg);
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 4px 4px 0 var(--line), 0 0 20px rgba(153, 24, 24, 0.1);
-  }
-  50% {
-    box-shadow: 4px 4px 0 var(--line), 0 0 40px rgba(153, 24, 24, 0.3);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
-@keyframes rotateElement {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* NAVBAR */
-/* ════════════════════════════════════════════════════════════════ */
-
-nav {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:center;
-  padding:18px 0;
-  animation: slideInDown 0.8s ease 0.1s backwards;
-}
-
-nav a {
-  color:var(--ink);
-  text-decoration:none;
-  font-weight:700;
-  font-size:14px;
-  padding:8px 14px;
-  border:2px solid var(--line);
-  border-radius:99px;
-  background:var(--card);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-nav a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: var(--sun);
-  z-index: -1;
-  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-nav a:hover::before {
-  left: 0;
-}
-
-nav a:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* HERO SECTION */
-/* ════════════════════════════════════════════════════════════════ */
-
-.hero {
-  text-align:center;
-  padding:60px 0 80px;
-}
-
-.tag {
-  display:inline-block;
-  background:var(--sun);
-  color:var(--ink);
-  font-weight:700;
-  font-size:14px;
-  padding:8px 16px;
-  border-radius:99px;
-  border:2px solid var(--line);
-  transform:rotate(-2deg);
-  animation: bounce 2s ease-in-out 0.5s infinite, slideInDown 0.8s ease 0.2s backwards;
-  position: relative;
-}
-
-.tag::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  border-radius: 99px;
-  animation: shimmer 3s infinite;
-}
-
-.hero h1 {
-  font-size:clamp(42px,10vw,80px);
-  margin:24px 0 16px;
-  animation: slideInLeft 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
-  position: relative;
-  background: linear-gradient(135deg, var(--ink) 0%, var(--coral) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero h1 span {
-  color:var(--coral);
-}
-
-.hero p {
-  max-width:560px;
-  margin:0 auto 32px;
-  color:var(--muted);
-  font-size:18px;
-  animation: slideInRight 1s ease 0.4s backwards;
-  line-height: 1.6;
-}
-
-.btn {
-  display:inline-block;
-  background:var(--coral);
-  color:#fff;
-  text-decoration:none;
-  font-weight:700;
-  padding:14px 32px;
-  border-radius:99px;
-  border:2px solid var(--line);
-  box-shadow:4px 4px 0 var(--line);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: scaleIn 0.8s ease 0.5s backwards;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.8s;
-}
-
-.btn:hover::before {
-  left: 100%;
-}
-
-.btn:hover {
-  transform: translateY(-6px);
-  box-shadow: 8px 8px 0 var(--line);
-}
-
-.btn:active {
-  transform: translateY(-2px);
-  box-shadow: 2px 2px 0 var(--line);
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* SEÇÕES */
-/* ════════════════════════════════════════════════════════════════ */
-
-section {
-  padding:60px 0;
-  position: relative;
-}
-
-section > * {
-  animation: fadeInUp 0.8s ease forwards;
-}
-
-.title {
-  font-size:clamp(32px,7vw,48px);
-  margin-bottom:12px;
-  animation: slideInLeft 0.8s ease backwards !important;
-  position: relative;
-}
-
-.title::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 60px;
-  height: 4px;
-  background: var(--coral);
-  border-radius: 2px;
-  animation: scaleX 0.8s ease 0.3s backwards;
-}
-
-@keyframes scaleX {
-  from {
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.sub {
-  color:var(--muted);
-  margin:0 0 32px;
-  font-size: 16px;
-  animation: slideInRight 0.8s ease 0.1s backwards !important;
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* CARROSSÉIS */
-/* ════════════════════════════════════════════════════════════════ */
-
-.proj {
-  margin-bottom:52px;
-  padding: 24px;
-  background: rgba(255,255,255,0.5);
-  border-radius: 24px;
-  border: 2px solid rgba(59,55,55,0.1);
-  backdrop-filter: blur(10px);
-  animation: fadeInUp 0.8s ease forwards;
-  transition: all 0.4s ease;
-}
-
-.proj:nth-child(2) { animation-delay: 0.1s; }
-.proj:nth-child(3) { animation-delay: 0.2s; }
-.proj:nth-child(4) { animation-delay: 0.3s; }
-.proj:nth-child(5) { animation-delay: 0.4s; }
-.proj:nth-child(6) { animation-delay: 0.5s; }
-.proj:nth-child(7) { animation-delay: 0.6s; }
-.proj:nth-child(8) { animation-delay: 0.7s; }
-.proj:nth-child(9) { animation-delay: 0.8s; }
-
-.proj:hover {
-  background: rgba(255,255,255,0.8);
-  border-color: var(--coral);
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.proj h3 {
-  font-size:24px;
-  margin-bottom: 8px;
-}
-
-.meta {
-  color:var(--muted);
-  font-size:14px;
-  margin:0;
-}
-
-.meta b {
-  color:var(--ink);
-}
-
-.projhead {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom: 16px;
-}
-
-.ctrl {
-  display:flex;
-  gap:8px;
-  flex:none;
-}
-
-.ctrl button {
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:2px solid var(--line);
-  background:var(--card);
-  color:var(--ink);
-  font-size:24px;
-  line-height:1;
-  cursor:pointer;
-  box-shadow:3px 3px 0 var(--line);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.ctrl button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: var(--sun);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-  z-index: 0;
-}
-
-.ctrl button:hover::before {
-  width: 100%;
-  height: 100%;
-}
-
-.ctrl button:hover {
-  transform: scale(1.12) translateY(-3px);
-  box-shadow: 4px 4px 0 var(--line);
-}
-
-.ctrl button span {
-  position: relative;
-  z-index: 1;
-}
-
-.rail {
-  display:flex;
-  gap:14px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  padding:8px 4px 20px;
-  -webkit-overflow-scrolling:touch;
-  scroll-behavior: smooth;
-}
-
-.rail::-webkit-scrollbar {
-  height: 6px;
-}
-
-.rail::-webkit-scrollbar-track {
-  background: var(--grape);
-  border-radius: 3px;
-}
-
-.rail::-webkit-scrollbar-thumb {
-  background: var(--coral);
-  border-radius: 3px;
-  transition: background 0.3s;
-}
-
-.rail::-webkit-scrollbar-thumb:hover {
-  background: var(--ink);
-}
-
-.rail img {
-  flex:0 0 min(340px,80vw);
-  width:min(340px,80vw);
-  height:auto;
-  aspect-ratio:1;
-  scroll-snap-align:start;
-  border:2px solid var(--line);
-  border-radius:20px;
-  box-shadow:4px 4px 0 var(--line);
-  background:#fff;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  animation: slideInRight 0.8s ease forwards;
-}
-
-.rail img:hover {
-  transform: translateY(-16px) scale(1.02);
-  box-shadow: 8px 12px 32px rgba(0,0,0,0.2);
-  filter: brightness(1.05);
-}
-
-.rail img:active {
-  transform: translateY(-8px) scale(1.01);
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* SEÇÃO SOBRE */
-/* ════════════════════════════════════════════════════════════════ */
-
-.about {
-  display:grid;
-  gap:32px;
-  grid-template-columns:1fr;
-  align-items:center;
-  animation: fadeInUp 0.8s ease 0.2s backwards !important;
-}
-
-@media(min-width:720px) {
-  .about {
-    grid-template-columns:280px 1fr;
-  }
-}
-
-.avatar-container {
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  background: linear-gradient(135deg, var(--grape) 0%, var(--sun) 100%);
-  border:3px solid var(--line);
-  box-shadow:0 8px 32px rgba(0,0,0,0.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto;
-  overflow:hidden;
-  flex-shrink:0;
-  animation: scaleIn 0.8s ease 0.3s backwards;
-  position: relative;
-}
-
-.avatar-container::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
-  animation: rotate 3s infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.avatar-container:hover {
-  transform: scale(1.08);
-  box-shadow: 0 16px 48px rgba(153, 24, 24, 0.2);
-}
-
-.avatar {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
-  display:block;
-  position: relative;
-  z-index: 1;
-}
-
-.about p {
-  margin:0 0 16px;
-  color:var(--muted);
-  font-size:15px;
-  line-height: 1.8;
-  animation: slideInRight 0.8s ease backwards !important;
-}
-
-.about p:nth-of-type(1) { animation-delay: 0.3s; }
-.about p:nth-of-type(2) { animation-delay: 0.4s; }
-
-/* ════════════════════════════════════════════════════════════════ */
-/* SERVIÇOS */
-/* ════════════════════════════════════════════════════════════════ */
-
-.grid {
-  display:grid;
-  gap:20px;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  animation: fadeInUp 0.8s ease 0.2s backwards !important;
-}
-
-.card {
-  background:var(--card);
-  border:2px solid var(--line);
-  border-radius:24px;
-  padding:28px;
-  box-shadow:4px 4px 0 var(--line);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: fadeInUp 0.8s ease forwards;
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(153, 24, 24, 0.05) 0%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
-
-.card:hover {
-  transform: translateY(-12px);
-  box-shadow: 8px 12px 32px rgba(0,0,0,0.15);
-  border-color: var(--coral);
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
-.card .dot {
-  width:50px;
-  height:50px;
-  border-radius:14px;
-  margin-bottom:16px;
-  border:2px solid var(--line);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.card:hover .dot {
-  transform: scale(1.15) rotate(10deg);
-}
-
-.card h3 {
-  font-size:22px;
-  margin-bottom:8px;
-  position: relative;
-  z-index: 1;
-}
-
-.card p {
-  margin:0;
-  color:var(--muted);
-  font-size:15px;
-  line-height: 1.6;
-  position: relative;
-  z-index: 1;
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* CONTATO */
-/* ════════════════════════════════════════════════════════════════ */
-
-.contact {
-  text-align:center;
-  background: linear-gradient(135deg, var(--grape) 0%, rgba(201, 209, 211, 0.8) 100%);
-  color:var(--ink);
-  border:2px solid var(--line);
-  border-radius:32px;
-  padding:56px 28px;
-  box-shadow:6px 6px 0 var(--line);
-  animation: scaleIn 0.8s ease 0.2s backwards !important;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.contact::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(153, 24, 24, 0.1) 0%, transparent 70%);
-  animation: float 6s ease-in-out infinite;
-}
-
-.contact:hover {
-  transform: translateY(-8px);
-  box-shadow: 10px 10px 0 var(--line);
-}
-
-.contact h2,
-.contact p {
-  position: relative;
-  z-index: 1;
-}
-
-.contact p {
-  max-width:480px;
-  margin:12px auto 28px;
-  font-size: 16px;
-}
-
-.links {
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  justify-content:center;
-  animation: slideInUp 0.8s ease 0.1s backwards;
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* FOOTER */
-/* ════════════════════════════════════════════════════════════════ */
-
-footer {
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
-  padding:40px 0;
-  animation: fadeInUp 0.8s ease 0.3s backwards;
-  border-top: 1px solid rgba(59,55,55,0.1);
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* SCROLL ANIMATIONS */
-/* ════════════════════════════════════════════════════════════════ */
-
-.scroll-fade {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.scroll-fade.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* RESPONSIVE */
-/* ════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 768px) {
-  .hero {
-    padding: 40px 0 60px;
-  }
-
-  .hero h1 {
-    font-size: clamp(32px, 8vw, 56px);
-    margin: 16px 0 12px;
-  }
-
-  .projhead {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .ctrl {
-    width: 100%;
-  }
-
-  .contact {
-    padding: 40px 20px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Camilla Paschoal - Designer de Social Media. Transformo ideias em conteúdos visuais criativos para redes sociais. Carrosséis, posts, stories e muito mais.">
+  <meta name="keywords" content="designer social media, carrosséis, posts instagram, design gráfico, criativo">
+  <meta name="author" content="Camilla Paschoal">
+  <meta name="theme-color" content="#F5F0FA">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Camilla Paschoal - Designer de Social Media">
+  <meta property="og:description" content="Transformo ideias em conteúdos visuais criativos para redes sociais.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://camillapaschoal.github.io">
+  <meta property="og:image" content="assets/avatar-real.jpg">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Camilla Paschoal - Designer de Social Media">
+  <meta name="twitter:description" content="Transformo ideias em conteúdos visuais criativos para redes sociais.">
+  
+  <!-- Preload Fonts -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" as="style">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/animations.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  
+  <title>Camilla Paschoal · Designer de Social Media</title>
 </head>
 <body>
-<div class="wrap">
-<nav>
-<a href="#carrosseis">Carrosséis</a><a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#contato">Contato</a>
-</nav>
+  <a href="#main" class="skip-link">Pular para conteúdo principal</a>
 
-<header class="hero">
-<span class="tag">Design de Social Media ✨</span>
-<h1>Oi, eu sou a <span>Camilla</span>!</h1>
-<p>Transformo ideias em carrosséis coloridos, claros e fáceis de ler, para o seu conteúdo parar o scroll.</p>
-<a class="btn" href="#carrosseis">Ver meus carrosséis</a>
-</header>
-
-<section id="carrosseis"><h2 class="title">Carrosséis</h2><p class="sub">Deslize para o lado ou use as setas para ver cada carrossel.</p>
-
-<div class="proj"><div class="projhead"><div><h3>Nem Todo Comportamento</h3><p class="meta">Série educativa · 11 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-0" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-0" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-0" tabindex="0"><img src="assets/carrosseis/3-nem-todo-comportamento/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/7.png" alt="Slide 7" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/8.png" alt="Slide 8" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/3-nem-todo-comportamento/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Quem é Vanessa Chaves</h3><p class="meta"><b>Cliente:</b> Vanessa Chaves · Apresentação profissional · 12 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-1" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-1" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-1" tabindex="0"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/7.png" alt="Slide 7" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/8.png" alt="Slide 8" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/9.png" alt="Slide 9" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/1-quem-e-vanessa-chaves/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Calma em Casa</h3><p class="meta">Guia de bem-estar · 11 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-2" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-2" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-2" tabindex="0"><img src="assets/carrosseis/2-calma-em-casa/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/7.png" alt="Slide 7" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/8.png" alt="Slide 8" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/2-calma-em-casa/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Não Gritar</h3><p class="meta">Orientação comportamental · 12 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-3" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-3" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-3" tabindex="0"><img src="assets/carrosseis/2-nao-gritar/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/7.png" alt="Slide 7" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/8.png" alt="Slide 8" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/9.png" alt="Slide 9" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/2-nao-gritar/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Autismo e Comunicação</h3><p class="meta">Conteúdo educativo · 12 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-4" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-4" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-4" tabindex="0"><img src="assets/carrosseis/3-autismo-e-comunicacao/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/7.png" alt="Slide 7" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/8.png" alt="Slide 8" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/9.png" alt="Slide 9" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/3-autismo-e-comunicacao/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Ser mãe atípica é…</h3><p class="meta"><b>Cliente:</b> Vanessa Chaves · Orientação parental TDAH | TEA · 12 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-5" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-5" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-5" tabindex="0"><img src="assets/carrosseis/1-maior-dificuldade/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/5.png" alt="Slide 5" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/6.png" alt="Slide 6" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/CONTATO.png" alt="Contato" loading="lazy"><img src="assets/carrosseis/1-maior-dificuldade/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-<div class="proj"><div class="projhead"><div><h3>Conhecendo Nosso Espaço</h3><p class="meta">Apresentação de espaço · 6 slides</p></div><div class="ctrl"><button type="button" data-rail="rail-6" data-dir="prev" aria-label="Slide anterior">‹</button><button type="button" data-rail="rail-6" data-dir="next" aria-label="Próximo slide">›</button></div></div><div class="rail" id="rail-6" tabindex="0"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/CAPA.png" alt="Capa" loading="lazy"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 1.png" alt="Slide 1" loading="lazy"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 2.png" alt="Slide 2" loading="lazy"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 3.png" alt="Slide 3" loading="lazy"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 4.png" alt="Slide 4" loading="lazy"><img src="assets/carrosseis/2-conhecendo-nosso-espaco/CONTRACAPA.png" alt="Contracapa" loading="lazy"></div></div>
-
-</section>
-
-<section id="sobre">
-<h2 class="title">Sobre mim</h2>
-<div class="about">
-<div class="avatar-container">
-<img src="assets/avatar-real.jpg" alt="Camilla Paschoal" class="avatar" loading="lazy">
-</div>
-<div>
-<p>Me chamo Camilla Paschoal, designer de social media no Rio de Janeiro. Crio posts e carrosséis que unem visual divertido com informação bem organizada.</p>
-<p>Gosto de cores vivas, layouts simples e conteúdo que qualquer pessoa entende rápido. Também tenho base em front-end (HTML, CSS e JavaScript), o que me ajuda a pensar em layouts que funcionam bem na tela.</p>
-</div>
-</div>
-</section>
-
-<section id="servicos">
-<h2 class="title">Serviços</h2>
-<p class="sub">Do conteúdo ao visual, tudo pensado para o seu perfil.</p>
-<div class="grid">
-<div class="card"><div class="dot" style="background:var(--sun)"></div><h3>Carrosséis</h3><p>Design de carrosséis informativos e de venda, prontos para postar.</p></div>
-<div class="card"><div class="dot" style="background:var(--coral)"></div><h3>Identidade para redes</h3><p>Paleta, fontes e templates para o seu feed ter cara de marca.</p></div>
-<div class="card"><div class="dot" style="background:var(--grape)"></div><h3>Pacotes mensais</h3><p>Planejamento e design de posts do mês, com consistência visual.</p></div>
-</div>
-</section>
-
-<section id="contato">
-<div class="contact">
-<h2 class="title">Vamos criar juntos?</h2>
-<p>Me chama no WhatsApp, no e-mail ou no Instagram para conversar sobre o seu projeto.</p>
-<div class="links"><a class="btn" href="https://wa.me/5521982566564" target="_blank" rel="noopener noreferrer">WhatsApp</a><a class="btn" href="mailto:camillacpaschoal@gmail.com">E-mail</a><a class="btn" href="https://instagram.com/camillapaschoal" target="_blank" rel="noopener noreferrer">@camillapaschoal</a></div>
-</div>
-</section>
-
-<footer>© 2026 Camilla Paschoal · Design de Social Media</footer>
-</div>
-
-<script>
-// ════════════════════════════════════════════════════════════════
-// CARROSSEL - NAVIGATION
-// ════════════════════════════════════════════════════════════════
-
-document.querySelectorAll('.ctrl button').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var railId = this.dataset.rail;
-    var rail = document.getElementById(railId);
-    if (rail) {
-      var w = rail.firstElementChild.offsetWidth + 14;
-      var direction = this.dataset.dir === 'next' ? 1 : -1;
-      rail.scrollBy({ left: direction * w, behavior: 'smooth' });
-    }
-  });
-});
-
-// ════════════════════════════════════════════════════════════════
-// INTERSECTION OBSERVER - SCROLL ANIMATIONS
-// ════════════════════════════════════════════════════════════════
-
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver(function(entries) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, observerOptions);
-
-document.querySelectorAll('.scroll-fade').forEach(function(el) {
-  observer.observe(el);
-});
-
-// ════════════════════════════════════════════════════════════════
-// SMOOTH SCROLL PARA LINKS
-// ════════════════════════════════════════════════════════════════
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  });
-});
-
-// ════════════════════════════════════════════════════════════════
-// PARALLAX EFFECT (SUBTLE)
-// ════════════════════════════════════════════════════════════════
-
-window.addEventListener('scroll', function() {
-  var hero = document.querySelector('.hero');
-  if (hero) {
-    var scrolled = window.pageYOffset;
-    hero.style.transform = 'translateY(' + scrolled * 0.5 + 'px)';
-  }
-});
-
-// ════════════════════════════════════════════════════════════════
-// DYNAMIC HOVER EFFECT
-// ════════════════════════════════════════════════════════════════
-
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('mousemove', function(e) {
-    const rect = this.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    this.style.setProperty('--mouse-x', x + 'px');
-    this.style.setProperty('--mouse-y', y + 'px');
-  });
-});
-
-// ════════════════════════════════════════════════════════════════
-// PERFORMANCE OPTIMIZATION
-// ════════════════════════════════════════════════════════════════
-
-// Lazy load images
-const images = document.querySelectorAll('img[loading="lazy"]');
-if ('IntersectionObserver' in window) {
-  const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.src;
-        img.classList.add('loaded');
-        imageObserver.unobserve(img);
-      }
-    });
-  });
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- NAVBAR -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
   
-  images.forEach(img => imageObserver.observe(img));
-}
-</script>
+  <nav class="navbar" role="navigation" aria-label="Menu principal">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">✨ Camilla</a>
+      
+      <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false">
+        ☰
+      </button>
+      
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#sobre" class="nav-link">Sobre</a></li>
+        <li class="nav-item"><a href="#portfolio" class="nav-link">Portfólio</a></li>
+        <li class="nav-item"><a href="#servicos" class="nav-link">Serviços</a></li>
+        <li class="nav-item"><a href="#diferenciais" class="nav-link">Diferencial</a></li>
+        <li class="nav-item"><a href="#contato" class="nav-link">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- MAIN -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  
+  <main id="main">
+    <div class="wrap">
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 1: HERO -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section class="hero" id="home">
+        <div class="hero-decoration"></div>
+        
+        <div class="hero-content">
+          <span class="hero-tag">✨ Design de Social Media</span>
+          
+          <h1>Ideias criativas merecem boas apresentações.</h1>
+          
+          <p>Transformo ideias em conteúdos visuais que comunicam, conectam e dão personalidade às marcas. Crio posts, carrosséis e stories pensados para destacar sua marca nas redes sociais, aproximar seu público e tornar sua comunicação mais interessante.</p>
+          
+          <div class="hero-buttons">
+            <a href="#portfolio" class="btn">Conheça meu trabalho</a>
+            <a href="#contato" class="btn btn-secondary">Vamos conversar</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 2: SOBRE MIM -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section id="sobre" class="scroll-fade">
+        <div class="section-header text-center">
+          <h2 class="section-title">Oi, eu sou a Camilla!</h2>
+        </div>
+        
+        <div class="about-container">
+          <div class="about-image">
+            <div class="avatar-container">
+              <img src="assets/avatar-real.jpg" alt="Camilla Paschoal - Designer de Social Media" class="avatar">
+            </div>
+          </div>
+          
+          <div class="about-content scroll-fade">
+            <p>Sou designer de Social Media e gosto de transformar ideias em conteúdos visuais que fazem sentido, despertam interesse e comunicam de verdade.</p>
+            
+            <p>Meu trabalho envolve criatividade, organização e atenção aos detalhes. Desenvolvo materiais para redes sociais buscando equilibrar estética e informação, sempre respeitando a identidade e os objetivos de cada projeto.</p>
+            
+            <p>Acredito que toda marca tem uma história para contar e que o design pode ajudar essa história a chegar mais longe.</p>
+            
+            <p>Por aqui, cada projeto é uma oportunidade de criar algo único!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 3: PORTFÓLIO / CARROSSÉIS -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section id="portfolio" class="scroll-fade">
+        <div class="section-header text-center">
+          <h2 class="section-title">Um pouco do que eu crio</h2>
+          <p class="section-subtitle">Cada projeto tem uma proposta, uma identidade e uma maneira própria de comunicar. Explore alguns dos meus trabalhos e conheça diferentes possibilidades de transformar ideias em conteúdo visual.</p>
+        </div>
+
+        <!-- Carrosséis -->
+        <div id="carousels-container">
+          <!-- Carousel 1: Nem Todo Comportamento -->
+          <div class="carousel-container scroll-fade stagger-1">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Nem Todo Comportamento</h3>
+                <p class="carousel-meta">Série educativa · 11 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-0" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-0" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-0" role="region" aria-label="Carrossel Nem Todo Comportamento">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/CAPA.png" alt="Capa - Nem Todo Comportamento" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/7.png" alt="Slide 7" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/8.png" alt="Slide 8" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/3-nem-todo-comportamento/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 2: Quem é Vanessa Chaves -->
+          <div class="carousel-container scroll-fade stagger-2">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Quem é Vanessa Chaves</h3>
+                <p class="carousel-meta"><b>Cliente:</b> Vanessa Chaves · Apresentação profissional · 12 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-1" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-1" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-1" role="region" aria-label="Carrossel Quem é Vanessa Chaves">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/CAPA.png" alt="Capa - Quem é Vanessa Chaves" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/7.png" alt="Slide 7" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/8.png" alt="Slide 8" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/9.png" alt="Slide 9" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/1-quem-e-vanessa-chaves/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 3: Calma em Casa -->
+          <div class="carousel-container scroll-fade stagger-3">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Calma em Casa</h3>
+                <p class="carousel-meta">Guia de bem-estar · 11 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-2" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-2" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-2" role="region" aria-label="Carrossel Calma em Casa">
+              <img src="assets/carrosseis/2-calma-em-casa/CAPA.png" alt="Capa - Calma em Casa" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/7.png" alt="Slide 7" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/8.png" alt="Slide 8" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/2-calma-em-casa/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 4: Não Gritar -->
+          <div class="carousel-container scroll-fade stagger-4">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Não Gritar</h3>
+                <p class="carousel-meta">Orientação comportamental · 12 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-3" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-3" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-3" role="region" aria-label="Carrossel Não Gritar">
+              <img src="assets/carrosseis/2-nao-gritar/CAPA.png" alt="Capa - Não Gritar" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/7.png" alt="Slide 7" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/8.png" alt="Slide 8" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/9.png" alt="Slide 9" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/2-nao-gritar/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 5: Autismo e Comunicação -->
+          <div class="carousel-container scroll-fade stagger-5">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Autismo e Comunicação</h3>
+                <p class="carousel-meta">Conteúdo educativo · 12 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-4" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-4" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-4" role="region" aria-label="Carrossel Autismo e Comunicação">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/CAPA.png" alt="Capa - Autismo e Comunicação" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/7.png" alt="Slide 7" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/8.png" alt="Slide 8" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/9.png" alt="Slide 9" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/3-autismo-e-comunicacao/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 6: Ser mãe atípica é… -->
+          <div class="carousel-container scroll-fade stagger-6">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Ser mãe atípica é…</h3>
+                <p class="carousel-meta"><b>Cliente:</b> Vanessa Chaves · Orientação parental TDAH | TEA · 12 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-5" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-5" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-5" role="region" aria-label="Carrossel Ser mãe atípica é...">
+              <img src="assets/carrosseis/1-maior-dificuldade/CAPA.png" alt="Capa - Ser mãe atípica é..." loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/5.png" alt="Slide 5" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/6.png" alt="Slide 6" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/CONTATO.png" alt="Contato" loading="lazy">
+              <img src="assets/carrosseis/1-maior-dificuldade/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Carousel 7: Conhecendo Nosso Espaço -->
+          <div class="carousel-container scroll-fade stagger-7">
+            <div class="carousel-header">
+              <div class="carousel-info">
+                <h3>Conhecendo Nosso Espaço</h3>
+                <p class="carousel-meta">Apresentação de espaço · 6 slides</p>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" class="carousel-btn" data-rail="rail-6" data-dir="prev" aria-label="Slide anterior">‹</button>
+                <button type="button" class="carousel-btn" data-rail="rail-6" data-dir="next" aria-label="Próximo slide">›</button>
+              </div>
+            </div>
+            <div class="rail" id="rail-6" role="region" aria-label="Carrossel Conhecendo Nosso Espaço">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/CAPA.png" alt="Capa - Conhecendo Nosso Espaço" loading="lazy">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 1.png" alt="Slide 1" loading="lazy">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 2.png" alt="Slide 2" loading="lazy">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 3.png" alt="Slide 3" loading="lazy">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/Prancheta 4.png" alt="Slide 4" loading="lazy">
+              <img src="assets/carrosseis/2-conhecendo-nosso-espaco/CONTRACAPA.png" alt="Contracapa" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 4: SERVIÇOS -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section id="servicos" class="scroll-fade">
+        <div class="section-header text-center">
+          <h2 class="section-title">Como posso ajudar sua marca?</h2>
+          <p class="section-subtitle">Do planejamento visual à criação das peças, desenvolvo conteúdos para deixar sua comunicação mais organizada, atrativa e alinhada à identidade da sua marca.</p>
+        </div>
+        
+        <div class="services-grid">
+          <div class="service-card scroll-fade stagger-1">
+            <div class="service-icon">📱</div>
+            <h3>Posts para redes sociais</h3>
+            <p>Artes personalizadas para divulgar produtos, serviços, novidades e campanhas que capturam atenção.</p>
+          </div>
+          
+          <div class="service-card scroll-fade stagger-2">
+            <div class="service-icon">📚</div>
+            <h3>Carrosséis criativos</h3>
+            <p>Conteúdos em sequência que organizam informações, contam histórias e despertam a curiosidade do público.</p>
+          </div>
+          
+          <div class="service-card scroll-fade stagger-3">
+            <div class="service-icon">✨</div>
+            <h3>Stories</h3>
+            <p>Peças visuais para compartilhar novidades, divulgar serviços e criar oportunidades de interação com seus seguidores.</p>
+          </div>
+          
+          <div class="service-card scroll-fade stagger-4">
+            <div class="service-icon">🎨</div>
+            <h3>Identidade visual para redes</h3>
+            <p>Organização de cores, tipografia e elementos gráficos para construir uma presença visual consistente e memorável.</p>
+          </div>
+          
+          <div class="service-card scroll-fade stagger-5">
+            <div class="service-icon">🚀</div>
+            <h3>Materiais promocionais</h3>
+            <p>Criação de artes para lançamentos, datas especiais, eventos e ações comerciais que geram resultado.</p>
+          </div>
+          
+          <div class="service-card scroll-fade stagger-6">
+            <div class="service-icon">📦</div>
+            <h3>Pacotes de conteúdo</h3>
+            <p>Combinações de peças gráficas para manter a comunicação da marca ativa, organizada e consistente o mês todo.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 5: MEU DIFERENCIAL -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section id="diferenciais" class="scroll-fade">
+        <div class="section-header text-center">
+          <h2 class="section-title">Mais do que criar artes</h2>
+          <p class="section-subtitle">Quero ajudar sua ideia a ganhar vida.</p>
+        </div>
+        
+        <div class="features-container">
+          <div class="feature-item scroll-fade stagger-1">
+            <div class="feature-icon">✓</div>
+            <div class="feature-content">
+              <h3>Criatividade com propósito</h3>
+              <p>Cada peça é pensada para transmitir uma mensagem, não apenas preencher um espaço no feed.</p>
+            </div>
+          </div>
+          
+          <div class="feature-item scroll-fade stagger-2">
+            <div class="feature-icon">✓</div>
+            <div class="feature-content">
+              <h3>Atenção à identidade da marca</h3>
+              <p>Busco respeitar as características de cada negócio, criando materiais que tenham personalidade e coerência visual.</p>
+            </div>
+          </div>
+          
+          <div class="feature-item scroll-fade stagger-3">
+            <div class="feature-icon">✓</div>
+            <div class="feature-content">
+              <h3>Comunicação clara</h3>
+              <p>Valorizo a organização das informações e a facilidade de leitura, para que a mensagem seja compreendida.</p>
+            </div>
+          </div>
+          
+          <div class="feature-item scroll-fade stagger-4">
+            <div class="feature-icon">✓</div>
+            <div class="feature-content">
+              <h3>Cuidado com os detalhes</h3>
+              <p>Tipografia, cores, composição e elementos visuais fazem parte de um processo pensado com atenção.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════ -->
+      <!-- SEÇÃO 6: CONTATO -->
+      <!-- ════════════════════════════════════════════════════════════ -->
+      
+      <section id="contato" class="scroll-fade">
+        <div class="contact-section">
+          <h2>Tem uma ideia? Vamos conversar!</h2>
+          
+          <p>Se você tem um negócio, trabalha por conta própria ou cria conteúdo e precisa de uma comunicação visual mais interessante, posso ajudar!</p>
+          
+          <p>Me conte um pouco sobre seu projeto. Vai ser um prazer conhecer sua ideia e pensar em possibilidades para transformá-la em conteúdo.</p>
+          
+          <p><strong>Vamos tirar esse projeto do papel?</strong></p>
+          
+          <div class="contact-links">
+            <a href="https://wa.me/5521982566564" target="_blank" rel="noopener noreferrer" class="btn">💬 WhatsApp</a>
+            <a href="mailto:camillacpaschoal@gmail.com" class="btn">📧 E-mail</a>
+            <a href="https://instagram.com/camillapaschoal" target="_blank" rel="noopener noreferrer" class="btn">📸 Instagram</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- FOOTER -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  
+  <footer>
+    <div class="wrap">
+      © 2026 Camilla Paschoal · Design de Social Media
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- FLOATING CTA BUTTON -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  
+  <a href="https://wa.me/5521982566564" target="_blank" rel="noopener noreferrer" class="floating-cta" aria-label="Enviar mensagem no WhatsApp">
+    💬
+    <span class="floating-cta-label">Enviar mensagem</span>
+  </a>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- SCRIPTS -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  
+  <script src="scripts/app.js" defer></script>
+
+  <!-- Schema.org - JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Camilla Paschoal",
+    "url": "https://camillapaschoal.github.io",
+    "email": "camillacpaschoal@gmail.com",
+    "jobTitle": "Designer de Social Media",
+    "image": "assets/avatar-real.jpg",
+    "sameAs": [
+      "https://instagram.com/camillapaschoal"
+    ],
+    "knowsAbout": [
+      "Design de Social Media",
+      "Carrosséis",
+      "Posts Instagram",
+      "Stories",
+      "Identidade Visual",
+      "Design Gráfico"
+    ]
+  }
+  </script>
 </body>
 </html>
