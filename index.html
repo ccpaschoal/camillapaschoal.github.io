@@ -129,7 +129,7 @@
       align-items: center;
       gap: 12px;
       background: linear-gradient(135deg, #2C5282 0%, #1A3A52 100%) !important;
-      color: white !important;
+      color: #FFFFFF !important;
       padding: 14px 28px !important;
       border-radius: 30px !important;
       border: 2px solid #1A3A52 !important;
@@ -140,6 +140,10 @@
       box-shadow: 0 4px 15px rgba(26, 58, 82, 0.3) !important;
       text-decoration: none;
       white-space: nowrap;
+    }
+    
+    .contact-btn span {
+      color: #FFFFFF !important;
     }
     
     .contact-btn:hover {
@@ -169,9 +173,17 @@
     }
     
     .floating-cta-icon {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
+      display: block;
+    }
+    
+    .floating-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     
     @media (max-width: 640px) {
