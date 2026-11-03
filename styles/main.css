@@ -9,25 +9,25 @@
 
 :root {
   /* Background & Base */
-  --bg-primary: #F5F0FA;
-  --bg-secondary: #FDFCFE;
+  --bg-primary: rgba(255, 255, 255, 0.85);
+  --bg-secondary: rgba(255, 255, 255, 0.95);
   
-  /* Elementos Lilás */
-  --color-light: #DCC9EF;
-  --color-mid: #A987C8;
-  --color-dark: #35313A;
+  /* Cores Escuras - Combinam com Céu Azul */
+  --color-light: #4A7BA7;      /* Azul claro */
+  --color-mid: #2C5282;        /* Azul médio - ACCENT PRINCIPAL */
+  --color-dark: #1A3A52;       /* Azul escuro */
   
   /* Texto & Borders */
   --white: #FFFFFF;
-  --text-muted: #6B6470;
-  --line: #35313A;
+  --text-muted: #3A5A7D;       /* Azul acinzentado */
+  --line: #1A3A52;             /* Azul escuro */
   
   /* Accents & Shadows */
-  --accent-primary: #A987C8;
-  --accent-secondary: #DCC9EF;
-  --shadow: rgba(53, 49, 58, 0.1);
-  --shadow-hover: rgba(169, 135, 200, 0.2);
-  --shadow-strong: rgba(53, 49, 58, 0.15);
+  --accent-primary: #2C5282;   /* Azul médio */
+  --accent-secondary: #4A7BA7; /* Azul claro */
+  --shadow: rgba(26, 58, 82, 0.15);
+  --shadow-hover: rgba(44, 82, 130, 0.25);
+  --shadow-strong: rgba(26, 58, 82, 0.2);
   
   /* Z-index */
   --z-nav: 100;
@@ -53,7 +53,6 @@ html {
 }
 
 body {
-  background-color: var(--bg-primary);
   background-image: url('assets/background.jpg');
   background-attachment: fixed;
   background-size: cover;
@@ -66,9 +65,10 @@ body {
   font-weight: 400;
   overflow-x: hidden;
   position: relative;
+  min-height: 100vh;
 }
 
-/* Overlay sutil no fundo */
+/* Overlay LEVE - Apenas para legibilidade do texto */
 body::before {
   content: '';
   position: fixed;
@@ -76,7 +76,7 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(245, 240, 250, 0.7) 0%, rgba(253, 252, 254, 0.4) 50%, rgba(245, 240, 250, 0.6) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.12) 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
-  color: var(--color-dark);
+  color: #1A3A52;
   letter-spacing: -0.5px;
 }
 
@@ -115,9 +115,10 @@ h4 {
 }
 
 p {
-  color: var(--text-muted);
+  color: #3A5A7D;
   line-height: 1.8;
   margin-bottom: 16px;
+  font-weight: 500;
 }
 
 a {

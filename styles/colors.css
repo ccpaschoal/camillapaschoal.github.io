@@ -1,0 +1,143 @@
+/* ════════════════════════════════════════════════════════════════ */
+/* PALETA DE CORES - AZUL ESCURO (Combina com Céu)                  */
+/* ════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Cores Azul Escuro - Combinam com Céu */
+  --primary: #2C5282;         /* Azul médio - ACCENT PRINCIPAL */
+  --primary-light: #4A7BA7;   /* Azul claro */
+  --primary-dark: #1A3A52;    /* Azul escuro */
+  
+  /* Texto */
+  --text-dark: #1A3A52;       /* Azul escuro */
+  --text-main: #3A5A7D;       /* Azul acinzentado */
+  --text-light: #5A7A9D;      /* Azul claro */
+  
+  /* Backgrounds */
+  --bg-white: #FFFFFF;
+  --bg-light: rgba(255, 255, 255, 0.95);
+  
+  /* Borders & Shadows */
+  --border-dark: #1A3A52;
+  --border-main: #2C5282;
+  --border-light: #4A7BA7;
+  
+  --shadow: rgba(26, 58, 82, 0.15);
+  --shadow-hover: rgba(44, 82, 130, 0.25);
+  --shadow-strong: rgba(26, 58, 82, 0.2);
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* OVERRIDE DE CORES EXISTENTES */
+/* ════════════════════════════════════════════════════════════════ */
+
+/* Títulos */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-dark) !important;
+}
+
+/* Texto de corpo */
+p, span, li, a {
+  color: var(--text-main) !important;
+}
+
+/* Cards */
+.card, .service-card, .portfolio-item {
+  background: var(--bg-white) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 4px 4px 0 var(--border-dark) !important;
+}
+
+/* Botões */
+.btn {
+  background: var(--primary) !important;
+  border-color: var(--border-dark) !important;
+  box-shadow: 4px 4px 0 var(--border-dark) !important;
+}
+
+.btn:hover {
+  background: var(--primary-dark) !important;
+  border-color: var(--border-dark) !important;
+  box-shadow: 8px 8px 0 var(--border-dark) !important;
+}
+
+.btn-secondary {
+  background: var(--bg-white) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 4px 4px 0 var(--primary) !important;
+}
+
+.btn-secondary:hover {
+  background: var(--primary-light) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(44, 82, 130, 0.1) !important;
+}
+
+.nav-link {
+  color: var(--text-dark) !important;
+  border-color: var(--border-dark) !important;
+  background: var(--bg-white) !important;
+}
+
+.nav-link:hover::before {
+  background: var(--primary-light) !important;
+}
+
+.nav-link.active {
+  background: var(--primary) !important;
+  color: var(--bg-white) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Focus states */
+:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px;
+}
+
+/* Seções com background leve */
+section:nth-child(even) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+}
+
+/* Contact section */
+.contact-section {
+  background: linear-gradient(135deg, var(--primary-light) 0%, rgba(74, 123, 167, 0.5) 100%) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 6px 6px 0 var(--border-dark) !important;
+}
+
+/* Tags */
+.tag, .hero-tag {
+  background: var(--primary-light) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark) !important;
+}
+
+/* Carrosséis */
+.carousel-container {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(44, 82, 130, 0.15) !important;
+}
+
+.carousel-btn {
+  border-color: var(--border-dark) !important;
+  background: var(--bg-white) !important;
+  color: var(--text-dark) !important;
+  box-shadow: 3px 3px 0 var(--border-dark) !important;
+}
+
+.carousel-btn::before {
+  background: var(--primary-light) !important;
+}
+
+/* Divisores */
+.divider {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%) !important;
+}
