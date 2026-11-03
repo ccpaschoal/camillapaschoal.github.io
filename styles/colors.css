@@ -270,6 +270,20 @@ p, span, li, a {
   backdrop-filter: blur(10px);
 }
 
+.nav-logo {
+  color: var(--text-dark) !important;
+}
+
+.nav-logo:hover {
+  background: rgba(44, 82, 130, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+.linkedin-icon {
+  background: #0A66C2 !important;
+  color: #FFFFFF !important;
+}
+
 .nav-link {
   color: var(--text-dark) !important;
   border-color: var(--border-dark) !important;
