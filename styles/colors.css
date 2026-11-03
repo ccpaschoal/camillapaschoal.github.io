@@ -31,8 +31,17 @@
 /* BACKGROUNDS DAS SEÇÕES PARA LEGIBILIDADE */
 /* ════════════════════════════════════════════════════════════════ */
 
+/* NUNCA sobrescrever o background do body! */
+body {
+  background-image: url('assets/background.jpg') !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 section {
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 12px;
