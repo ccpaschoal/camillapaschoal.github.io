@@ -114,19 +114,35 @@
     }
     
     .nav-link {
-      background: rgba(255, 255, 255, 0.2) !important;
+      background: rgba(255, 255, 255, 0.15) !important;
       color: #FFFFFF !important;
-      border-color: rgba(255, 255, 255, 0.3) !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
     }
     
     .nav-link:hover {
-      background: rgba(255, 255, 255, 0.3) !important;
+      background: rgba(255, 255, 255, 0.25) !important;
     }
     
     .nav-link.active {
-      background: rgba(255, 255, 255, 0.4) !important;
+      background: rgba(255, 255, 255, 0.3) !important;
       color: #FFFFFF !important;
-      border-color: rgba(255, 255, 255, 0.5) !important;
+      border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    @media (max-width: 640px) {
+      .nav-link {
+        background: transparent !important;
+        border-color: transparent !important;
+        color: #FFFFFF !important;
+      }
+      
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+      
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.2) !important;
+      }
     }
     
     .linkedin-icon {
