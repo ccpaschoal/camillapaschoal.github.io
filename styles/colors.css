@@ -28,17 +28,25 @@
 }
 
 /* ════════════════════════════════════════════════════════════════ */
-/* BACKGROUNDS DAS SEÇÕES PARA LEGIBILIDADE */
+/* GARANTIR QUE O BACKGROUND FUNCIONA */
 /* ════════════════════════════════════════════════════════════════ */
 
-/* NUNCA sobrescrever o background do body! */
-body {
-  background-image: url('assets/background.jpg') !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
+html {
+  background: linear-gradient(180deg, #87CEEB 0%, #4A90E2 50%, #1A5F8F 100%) fixed;
 }
+
+body {
+  background-image: url('assets/background.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* BACKGROUNDS DAS SEÇÕES PARA LEGIBILIDADE */
+/* ════════════════════════════════════════════════════════════════ */
 
 section {
   background: rgba(255, 255, 255, 0.75);
@@ -52,7 +60,7 @@ section {
 }
 
 .hero {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.72) 100%) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.72) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 100px 40px;
@@ -65,7 +73,7 @@ section {
 
 /* Hero content específico */
 .hero-content {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
   padding: 60px 50px;
   border-radius: 16px;
@@ -74,17 +82,17 @@ section {
 }
 
 .hero-tag {
-  background: rgba(44, 82, 130, 0.1) !important;
-  border: 2px solid var(--primary) !important;
+  background: rgba(44, 82, 130, 0.1);
+  border: 2px solid var(--primary);
   padding: 8px 16px;
   border-radius: 20px;
   display: inline-block;
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
 }
 
 /* Section headers */
 .section-header {
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.88);
   padding: 40px 30px;
   border-radius: 12px;
   margin-bottom: 40px;
@@ -93,20 +101,20 @@ section {
 }
 
 .section-title {
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
   font-size: 2.5rem;
   margin-bottom: 15px;
 }
 
 .section-subtitle {
-  color: var(--text-main) !important;
+  color: var(--text-main);
   font-size: 1.1rem;
   line-height: 1.8;
 }
 
 /* About section específica */
 .about-container {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
   padding: 40px;
   border-radius: 12px;
@@ -117,52 +125,52 @@ section {
 }
 
 .about-content {
-  background: transparent !important;
+  background: transparent;
 }
 
 .about-content p {
-  color: var(--text-main) !important;
+  color: var(--text-main);
   line-height: 1.9;
   font-size: 1.05rem;
 }
 
 /* Portfolio cards */
 .carousel-container {
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(8px);
   padding: 30px;
   border-radius: 12px;
-  border: 2px solid rgba(44, 82, 130, 0.1) !important;
+  border: 2px solid rgba(44, 82, 130, 0.1);
   margin-bottom: 30px;
   box-shadow: 0 4px 15px rgba(26, 58, 82, 0.1);
 }
 
 .carousel-header {
-  background: transparent !important;
+  background: transparent;
   border-bottom: 2px solid rgba(44, 82, 130, 0.1);
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
 .carousel-header h3 {
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
   font-size: 1.4rem;
   margin-bottom: 8px;
 }
 
 .carousel-meta {
-  color: var(--text-light) !important;
+  color: var(--text-light);
   font-size: 0.95rem;
 }
 
 /* Services section */
 .services-grid {
-  background: transparent !important;
+  background: transparent;
 }
 
 .service-card {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border: 2px solid var(--primary) !important;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid var(--primary);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(26, 58, 82, 0.12);
@@ -170,23 +178,23 @@ section {
 }
 
 .service-card:hover {
-  transform: translateY(-8px) !important;
-  box-shadow: 0 12px 30px rgba(44, 82, 130, 0.2) !important;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(44, 82, 130, 0.2);
 }
 
 .service-card h3 {
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
   margin-bottom: 15px;
 }
 
 .service-card p {
-  color: var(--text-main) !important;
+  color: var(--text-main);
 }
 
 /* Contact section */
 .contact-section {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 100%) !important;
-  border: 3px solid var(--primary) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 100%);
+  border: 3px solid var(--primary);
   padding: 50px 40px;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(26, 58, 82, 0.15);
@@ -194,12 +202,12 @@ section {
 }
 
 .contact-section h2 {
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
   margin-bottom: 30px;
 }
 
 .contact-section p {
-  color: var(--text-main) !important;
+  color: var(--text-main);
   font-size: 1.1rem;
   margin-bottom: 30px;
 }
@@ -212,15 +220,15 @@ section {
 
 /* Floating button */
 .floating-btn {
-  background: var(--primary) !important;
-  border: 2px solid var(--border-dark) !important;
-  box-shadow: 0 4px 12px rgba(26, 58, 82, 0.3) !important;
-  color: var(--bg-white) !important;
+  background: var(--primary);
+  border: 2px solid var(--border-dark);
+  box-shadow: 0 4px 12px rgba(26, 58, 82, 0.3);
+  color: var(--bg-white);
 }
 
 .floating-btn:hover {
-  background: var(--primary-dark) !important;
-  box-shadow: 0 8px 20px rgba(26, 58, 82, 0.4) !important;
+  background: var(--primary-dark);
+  box-shadow: 0 8px 20px rgba(26, 58, 82, 0.4);
 }
 
 /* ════════════════════════════════════════════════════════════════ */
@@ -229,119 +237,123 @@ section {
 
 /* Títulos */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--text-dark) !important;
+  color: var(--text-dark);
 }
 
 /* Texto de corpo */
-p, span, li, a {
-  color: var(--text-main) !important;
+p, span, li {
+  color: var(--text-main);
+}
+
+a {
+  color: var(--text-main);
 }
 
 /* Cards */
 .card, .service-card, .portfolio-item {
-  background: var(--bg-white) !important;
-  border-color: var(--primary) !important;
-  box-shadow: 4px 4px 0 var(--border-dark) !important;
+  background: var(--bg-white);
+  border-color: var(--primary);
+  box-shadow: 4px 4px 0 var(--border-dark);
 }
 
 /* Botões */
 .btn {
-  background: var(--primary) !important;
-  border-color: var(--border-dark) !important;
-  box-shadow: 4px 4px 0 var(--border-dark) !important;
-  color: var(--bg-white) !important;
+  background: var(--primary);
+  border-color: var(--border-dark);
+  box-shadow: 4px 4px 0 var(--border-dark);
+  color: var(--bg-white);
   font-weight: 600;
 }
 
 .btn:hover {
-  background: var(--primary-dark) !important;
-  border-color: var(--border-dark) !important;
-  box-shadow: 8px 8px 0 var(--border-dark) !important;
+  background: var(--primary-dark);
+  border-color: var(--border-dark);
+  box-shadow: 8px 8px 0 var(--border-dark);
 }
 
 .btn-secondary {
-  background: var(--bg-white) !important;
-  color: var(--primary) !important;
-  border-color: var(--primary) !important;
-  box-shadow: 4px 4px 0 var(--primary) !important;
+  background: var(--bg-white);
+  color: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 4px 4px 0 var(--primary);
 }
 
 .btn-secondary:hover {
-  background: var(--primary-light) !important;
-  border-color: var(--primary) !important;
-  color: var(--bg-white) !important;
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--bg-white);
 }
 
 /* Navbar */
 .navbar {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(44, 82, 130, 0.1) !important;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(44, 82, 130, 0.1);
   backdrop-filter: blur(10px);
 }
 
-.nav-logo {
-  color: var(--text-dark) !important;
-}
-
-.nav-logo:hover {
-  background: rgba(44, 82, 130, 0.1) !important;
-  color: var(--primary) !important;
-}
-
-.linkedin-icon {
-  background: #0A66C2 !important;
-  color: #FFFFFF !important;
-}
-
 .nav-link {
-  color: var(--text-dark) !important;
-  border-color: var(--border-dark) !important;
-  background: var(--bg-white) !important;
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+  background: var(--bg-white);
 }
 
 .nav-link:hover::before {
-  background: var(--primary-light) !important;
+  background: var(--primary-light);
 }
 
 .nav-link.active {
-  background: var(--primary) !important;
-  color: var(--bg-white) !important;
-  border-color: var(--primary) !important;
+  background: var(--primary);
+  color: var(--bg-white);
+  border-color: var(--primary);
+}
+
+.nav-logo {
+  color: var(--text-dark);
+}
+
+.nav-logo:hover {
+  background: rgba(44, 82, 130, 0.1);
+  color: var(--primary);
+}
+
+.linkedin-icon {
+  background: #0A66C2;
+  color: #FFFFFF;
 }
 
 /* Focus states */
 :focus-visible {
-  outline: 2px solid var(--primary) !important;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 /* Tags */
 .tag, .hero-tag {
-  background: var(--primary-light) !important;
-  border-color: var(--border-dark) !important;
-  color: var(--text-dark) !important;
+  background: var(--primary-light);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
 }
 
 /* Carrosséis */
 .carousel-container {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(44, 82, 130, 0.15) !important;
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(44, 82, 130, 0.15);
 }
 
 .carousel-btn {
-  border-color: var(--border-dark) !important;
-  background: var(--bg-white) !important;
-  color: var(--text-dark) !important;
-  box-shadow: 3px 3px 0 var(--border-dark) !important;
+  border-color: var(--border-dark);
+  background: var(--bg-white);
+  color: var(--text-dark);
+  box-shadow: 3px 3px 0 var(--border-dark);
 }
 
 .carousel-btn::before {
-  background: var(--primary-light) !important;
+  background: var(--primary-light);
 }
 
 /* Divisores */
 .divider {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%) !important;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
 }
 
 /* ════════════════════════════════════════════════════════════════ */
