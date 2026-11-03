@@ -53,7 +53,7 @@ html {
 }
 
 body {
-  background: linear-gradient(180deg, #87CEEB 0%, #4A90E2 50%, #1A5F8F 100%);
+  background-image: url('assets/background.jpg');
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
