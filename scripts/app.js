@@ -254,10 +254,13 @@ function initHeroPhone() {
 
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
-  const totalSlides = document.querySelectorAll('.carousel .slide').length;
+  const totals = {
+    projects: document.querySelectorAll('.carousel').length,
+    slides: document.querySelectorAll('.carousel .slide').length,
+  };
 
   counters.forEach((el) => {
-    if (el.dataset.count === 'slides') el.dataset.count = totalSlides;
+    if (el.dataset.count in totals) el.dataset.count = totals[el.dataset.count];
     el.textContent = reduceMotion ? el.dataset.count : '0';
   });
 
