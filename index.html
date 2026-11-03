@@ -64,6 +64,7 @@
         <li><a href="#contato" class="nav-link">Contato</a></li>
       </ul>
     </nav>
+    <span class="scroll-progress" aria-hidden="true"></span>
   </header>
 
   <main class="container">
@@ -72,14 +73,57 @@
     <section class="section hero" aria-labelledby="hero-title">
       <div class="hero-content">
         <span class="hero-tag">✨ Design de Social Media</span>
-        <h1 id="hero-title">Ideias criativas merecem boas apresentações.</h1>
-        <p>Transformo ideias em conteúdos visuais que comunicam, conectam e dão personalidade às marcas. Crio posts, carrosséis e stories pensados para destacar sua marca nas redes sociais, aproximar seu público e tornar sua comunicação mais interessante.</p>
+        <h1 id="hero-title" class="hero-title">
+          <span class="line"><span>Ideias criativas</span></span>
+          <span class="line"><span>merecem <em>boas</em></span></span>
+          <span class="line"><span><em>apresentações.</em></span></span>
+        </h1>
+        <p class="hero-text">Transformo ideias em conteúdos visuais que comunicam, conectam e dão personalidade às marcas. Crio posts, carrosséis e stories pensados para destacar sua marca nas redes sociais, aproximar seu público e tornar sua comunicação mais interessante.</p>
         <div class="hero-buttons">
-          <a href="#portfolio" class="btn btn-primary">Conheça meu trabalho</a>
+          <a href="#portfolio" class="btn btn-primary">
+            Conheça meu trabalho
+            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
           <a href="#contato" class="btn btn-outline">Vamos conversar</a>
         </div>
       </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="phone hero-phone">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <img src="assets/avatar-real.jpg" alt="" width="28" height="28">
+              <span>camillapaschoal</span>
+            </div>
+            <div class="phone-media">
+              <img class="is-active" src="assets/carrosseis/3-nem-todo-comportamento/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/1-quem-e-vanessa-chaves/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/2-calma-em-casa/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/2-nao-gritar/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/3-autismo-e-comunicacao/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/1-maior-dificuldade/CAPA.png" alt="">
+              <img data-src="assets/carrosseis/2-conhecendo-nosso-espaco/CAPA.png" alt="">
+            </div>
+            <div class="phone-actions">
+              <span class="phone-like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.7A8.4 8.4 0 1 1 21 11.5z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+              <svg class="phone-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="phone-dots"></div>
+            <p class="phone-caption"><strong>camillapaschoal</strong> Novo carrossel no ar ✨</p>
+            <div class="phone-skeleton"><span></span><span></span></div>
+          </div>
+        </div>
+        <span class="hero-chip chip-1">📚 Carrosséis</span>
+        <span class="hero-chip chip-2">📱 Posts &amp; Stories</span>
+      </div>
     </section>
+
+    <!-- Faixa com os posts passando (montada pelo JS a partir dos carrosséis) -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track"></div>
+    </div>
 
     <!-- Sobre -->
     <section class="section reveal" id="sobre" aria-labelledby="sobre-title">
@@ -97,6 +141,21 @@
           <p class="about-highlight">Por aqui, cada projeto é uma oportunidade de criar algo único!</p>
         </div>
       </div>
+
+      <div class="stats">
+        <div class="stat reveal" style="--i:0">
+          <span class="stat-number" data-count="7">7</span>
+          <span class="stat-label">projetos no portfólio</span>
+        </div>
+        <div class="stat reveal" style="--i:1">
+          <span class="stat-number" data-count="slides">73</span>
+          <span class="stat-label">slides criados</span>
+        </div>
+        <div class="stat reveal" style="--i:2">
+          <span class="stat-number" data-count="6">6</span>
+          <span class="stat-label">tipos de serviço</span>
+        </div>
+      </div>
     </section>
 
     <!-- Portfólio -->
@@ -107,7 +166,7 @@
         <span class="section-hint">🔍 Toque em uma imagem para ampliar</span>
       </div>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Nem Todo Comportamento</h3>
@@ -133,7 +192,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Quem é Vanessa Chaves</h3>
@@ -160,7 +219,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Calma em Casa</h3>
@@ -186,7 +245,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Não Gritar</h3>
@@ -213,7 +272,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Autismo e Comunicação</h3>
@@ -240,7 +299,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Ser mãe atípica é…</h3>
@@ -264,7 +323,7 @@
         </div>
       </article>
 
-      <article class="carousel">
+      <article class="carousel reveal">
         <div class="carousel-header">
           <div>
             <h3>Conhecendo Nosso Espaço</h3>
@@ -293,33 +352,33 @@
         <p class="section-subtitle">Do planejamento visual à criação das peças, desenvolvo conteúdos para deixar sua comunicação mais organizada, atrativa e alinhada à identidade da sua marca.</p>
       </div>
 
-      <div class="services-grid">
-        <article class="service-card">
+      <div class="services-grid" data-stagger>
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">📱</div>
           <h3>Posts para redes sociais</h3>
           <p>Artes personalizadas para divulgar produtos, serviços, novidades e campanhas que capturam atenção.</p>
         </article>
-        <article class="service-card">
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">📚</div>
           <h3>Carrosséis criativos</h3>
           <p>Conteúdos em sequência que organizam informações, contam histórias e despertam a curiosidade do público.</p>
         </article>
-        <article class="service-card">
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">✨</div>
           <h3>Stories</h3>
           <p>Peças visuais para compartilhar novidades, divulgar serviços e criar oportunidades de interação com seus seguidores.</p>
         </article>
-        <article class="service-card">
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">🎨</div>
           <h3>Identidade visual para redes</h3>
           <p>Organização de cores, tipografia e elementos gráficos para construir uma presença visual consistente e memorável.</p>
         </article>
-        <article class="service-card">
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">🚀</div>
           <h3>Materiais promocionais</h3>
           <p>Criação de artes para lançamentos, datas especiais, eventos e ações comerciais que geram resultado.</p>
         </article>
-        <article class="service-card">
+        <article class="service-card reveal">
           <div class="service-icon" aria-hidden="true">📦</div>
           <h3>Pacotes de conteúdo</h3>
           <p>Combinações de peças gráficas para manter a comunicação da marca ativa, organizada e consistente o mês todo.</p>
@@ -334,35 +393,70 @@
         <p class="section-subtitle">Quero ajudar sua ideia a ganhar vida.</p>
       </div>
 
-      <div class="features">
-        <article class="feature">
-          <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-          <div>
-            <h3>Criatividade com propósito</h3>
-            <p>Cada peça é pensada para transmitir uma mensagem, não apenas preencher um espaço no feed.</p>
+      <div class="story">
+        <div class="story-steps">
+          <div class="story-step is-active" data-step="0">
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">01</span>
+              <div>
+                <h3>Criatividade com propósito</h3>
+                <p>Cada peça é pensada para transmitir uma mensagem, não apenas preencher um espaço no feed.</p>
+              </div>
+            </article>
           </div>
-        </article>
-        <article class="feature">
-          <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-          <div>
-            <h3>Atenção à identidade da marca</h3>
-            <p>Busco respeitar as características de cada negócio, criando materiais que tenham personalidade e coerência visual.</p>
+          <div class="story-step" data-step="1">
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">02</span>
+              <div>
+                <h3>Atenção à identidade da marca</h3>
+                <p>Busco respeitar as características de cada negócio, criando materiais que tenham personalidade e coerência visual.</p>
+              </div>
+            </article>
           </div>
-        </article>
-        <article class="feature">
-          <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-          <div>
-            <h3>Comunicação clara</h3>
-            <p>Valorizo a organização das informações e a facilidade de leitura, para que a mensagem seja compreendida.</p>
+          <div class="story-step" data-step="2">
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">03</span>
+              <div>
+                <h3>Comunicação clara</h3>
+                <p>Valorizo a organização das informações e a facilidade de leitura, para que a mensagem seja compreendida.</p>
+              </div>
+            </article>
           </div>
-        </article>
-        <article class="feature">
-          <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-          <div>
-            <h3>Cuidado com os detalhes</h3>
-            <p>Tipografia, cores, composição e elementos visuais fazem parte de um processo pensado com atenção.</p>
+          <div class="story-step" data-step="3">
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">04</span>
+              <div>
+                <h3>Cuidado com os detalhes</h3>
+                <p>Tipografia, cores, composição e elementos visuais fazem parte de um processo pensado com atenção.</p>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
+
+        <div class="story-visual" aria-hidden="true">
+          <div class="phone story-phone">
+            <div class="phone-screen">
+              <div class="phone-header">
+                <img src="assets/avatar-real.jpg" alt="" width="28" height="28" loading="lazy">
+                <span>camillapaschoal</span>
+              </div>
+              <div class="phone-media">
+                <img class="is-active" data-step="0" src="assets/carrosseis/3-autismo-e-comunicacao/CAPA.png" alt="" loading="lazy">
+                <img data-step="1" src="assets/carrosseis/1-quem-e-vanessa-chaves/CAPA.png" alt="" loading="lazy">
+                <img data-step="2" src="assets/carrosseis/2-calma-em-casa/2.png" alt="" loading="lazy">
+                <img data-step="3" src="assets/carrosseis/2-nao-gritar/CAPA.png" alt="" loading="lazy">
+              </div>
+              <div class="phone-actions">
+                <span class="phone-like is-liked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.7A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+                <svg class="phone-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <p class="phone-caption"><strong>camillapaschoal</strong> Cada detalhe pensado com carinho ✨</p>
+              <div class="phone-skeleton"><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
