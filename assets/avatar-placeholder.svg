@@ -1,0 +1,12 @@
+﻿<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #c9d1d3; }
+      .circle { fill: #991818; }
+      .text { font-family: Fredoka, sans-serif; font-size: 120px; font-weight: 700; fill: #f7f7f7; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="500" height="500" class="bg"/>
+  <circle cx="250" cy="250" r="240" class="circle"/>
+  <text x="250" y="310" class="text">C</text>
+</svg>
