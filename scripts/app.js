@@ -1,351 +1,199 @@
-/* ════════════════════════════════════════════════════════════════ */
-/* APP.JS - Inicialização Principal                                 */
-/* ════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   Camilla Paschoal · Portfólio
+   ══════════════════════════════════════════════════════════════ */
 
-// Importar módulos (simulado com funções globais)
-// Em produção, usar import/export
+document.documentElement.classList.add('js');
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🎨 Portfólio Camilla Paschoal iniciando...');
-  
-  // Inicializar componentes
-  initNavigation();
-  initScrollAnimations();
+  initNavbar();
+  initActiveSection();
+  initReveal();
   initCarousels();
-  initPortfolioFilters();
-  initFloatingCTA();
-  initFormValidation();
-  
-  console.log('✅ Todos os componentes inicializados');
+  initLightbox();
+  document.getElementById('year').textContent = new Date().getFullYear();
 });
 
-/* ════════════════════════════════════════════════════════════════ */
-/* UTILIDADES                                                       */
-/* ════════════════════════════════════════════════════════════════ */
+/* ── Navbar e menu mobile ─────────────────────────────────────── */
 
-// Função para debug
-const log = (msg, type = 'log') => {
-  if (process.env.NODE_ENV === 'development') {
-    console[type](msg);
-  }
-};
+function initNavbar() {
+  const navbar = document.querySelector('.navbar');
+  const toggle = document.querySelector('.nav-toggle');
+  const menu = document.getElementById('nav-menu');
 
-// Delay utility
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Get element safely
-const getEl = (selector) => document.querySelector(selector);
-const getEls = (selector) => document.querySelectorAll(selector);
-
-/* ════════════════════════════════════════════════════════════════ */
-/* NAVEGAÇÃO                                                        */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initNavigation() {
-  const hamburger = getEl('.nav-toggle');
-  const menu = getEl('.nav-menu');
-  const navLinks = getEls('.nav-link');
-  const navbar = getEl('.navbar');
-  
-  // Hamburger menu
-  if (hamburger) {
-    hamburger.addEventListener('click', () => {
-      menu.classList.toggle('active');
-      hamburger.setAttribute('aria-expanded', menu.classList.contains('active'));
-    });
-  }
-  
-  // Fechar menu ao clicar em um link
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      menu?.classList.remove('active');
-      if (hamburger) {
-        hamburger.setAttribute('aria-expanded', 'false');
-      }
-      updateActiveNav(link);
-    });
-  });
-  
-  // Scroll suave com anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = getEl(anchor.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
-  });
-  
-  // Navbar sticky effect
-  window.addEventListener('scroll', () => {
-    if (navbar) {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-    }
-    
-    // Atualizar nav ativa baseado no scroll
-    updateActiveNavOnScroll();
-  });
-}
-
-function updateActiveNav(link) {
-  getEls('.nav-link').forEach(l => l.classList.remove('active'));
-  link.classList.add('active');
-}
-
-function updateActiveNavOnScroll() {
-  const sections = getEls('section[id]');
-  const navLinks = getEls('.nav-link');
-  
-  let current = '';
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (pageYOffset >= sectionTop - 200) {
-      current = section.getAttribute('id');
-    }
-  });
-  
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${current}`) {
-      link.classList.add('active');
-    }
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* SCROLL ANIMATIONS (Intersection Observer)                        */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+  const setOpen = (open) => {
+    menu.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
   };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-  
-  getEls('.scroll-fade').forEach(el => {
-    observer.observe(el);
+
+  toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
+
+  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+
+  document.addEventListener('click', (event) => {
+    if (menu.classList.contains('is-open') && !navbar.contains(event.target)) setOpen(false);
   });
-  
-  // Observar cards, items e outros elementos
-  getEls('.card, .portfolio-item, .feature-item, .service-card').forEach(el => {
-    observer.observe(el);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu.classList.contains('is-open')) {
+      setOpen(false);
+      toggle.focus();
+    }
   });
+
+  const onScroll = () => navbar.classList.toggle('is-scrolled', window.scrollY > 10);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 }
 
-/* ════════════════════════════════════════════════════════════════ */
-/* CARROSSÉIS                                                       */
-/* ════════════════════════════════════════════════════════════════ */
+/* ── Destaca no menu a seção visível ──────────────────────────── */
+
+function initActiveSection() {
+  const links = new Map(
+    [...document.querySelectorAll('.nav-link')].map((link) => [link.getAttribute('href').slice(1), link])
+  );
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((link) => link.classList.remove('is-active'));
+        links.get(entry.target.id)?.classList.add('is-active');
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' }
+  );
+
+  document.querySelectorAll('main section[id]').forEach((section) => observer.observe(section));
+}
+
+/* ── Animação de entrada ──────────────────────────────────────── */
+
+function initReveal() {
+  const items = document.querySelectorAll('.reveal');
+
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((item) => item.classList.add('is-visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  items.forEach((item) => observer.observe(item));
+}
+
+/* ── Carrosséis ───────────────────────────────────────────────── */
 
 function initCarousels() {
-  const carouselBtns = getEls('.carousel-btn');
-  
-  carouselBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const railId = btn.dataset.rail;
-      const direction = btn.dataset.dir;
-      const rail = getEl(`#${railId}`);
-      
-      if (rail) {
-        const slideWidth = rail.firstElementChild.offsetWidth + 14;
-        const scrollAmount = direction === 'next' ? slideWidth : -slideWidth;
-        
-        rail.scrollBy({
-          left: scrollAmount,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-  
-  // Teclado (Arrow keys para navegação)
-  getEls('.rail').forEach(rail => {
-    rail.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') {
-        rail.scrollBy({ left: 340, behavior: 'smooth' });
-      } else if (e.key === 'ArrowLeft') {
-        rail.scrollBy({ left: -340, behavior: 'smooth' });
-      }
-    });
+  document.querySelectorAll('.carousel').forEach((carousel) => {
+    const rail = carousel.querySelector('.rail');
+    const prev = carousel.querySelector('[data-dir="prev"]');
+    const next = carousel.querySelector('[data-dir="next"]');
+
+    const step = () => {
+      const slide = rail.querySelector('.slide');
+      const gap = parseFloat(getComputedStyle(rail).columnGap) || 16;
+      return slide ? slide.offsetWidth + gap : rail.clientWidth;
+    };
+
+    const updateButtons = () => {
+      const max = rail.scrollWidth - rail.clientWidth - 2;
+      prev.disabled = rail.scrollLeft <= 2;
+      next.disabled = rail.scrollLeft >= max;
+    };
+
+    prev.addEventListener('click', () => rail.scrollBy({ left: -step() }));
+    next.addEventListener('click', () => rail.scrollBy({ left: step() }));
+    rail.addEventListener('scroll', updateButtons, { passive: true });
+    window.addEventListener('resize', updateButtons);
+    updateButtons();
   });
 }
 
-/* ════════════════════════════════════════════════════════════════ */
-/* FILTROS DE PORTFÓLIO                                             */
-/* ════════════════════════════════════════════════════════════════ */
+/* ── Lightbox: abre as imagens dos carrosséis em tela cheia ───── */
 
-function initPortfolioFilters() {
-  const filterBtns = getEls('.filter-btn');
-  const portfolioItems = getEls('.portfolio-item');
-  
-  if (filterBtns.length === 0) return;
-  
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      
-      // Atualizar botão ativo
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      // Filtrar items
-      portfolioItems.forEach(item => {
-        const category = item.dataset.category;
-        
-        if (filter === 'all' || category === filter) {
-          item.style.display = 'block';
-          setTimeout(() => {
-            item.classList.add('visible');
-          }, 10);
-        } else {
-          item.classList.remove('visible');
-          setTimeout(() => {
-            item.style.display = 'none';
-          }, 300);
-        }
-      });
-    });
+function initLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  const image = lightbox.querySelector('.lightbox-img');
+  const caption = lightbox.querySelector('.lightbox-caption');
+  const closeBtn = lightbox.querySelector('.lightbox-close');
+  const prevBtn = lightbox.querySelector('.lightbox-prev');
+  const nextBtn = lightbox.querySelector('.lightbox-next');
+
+  let slides = [];
+  let index = 0;
+  let title = '';
+  let lastFocus = null;
+
+  const show = (i) => {
+    index = (i + slides.length) % slides.length;
+    const img = slides[index].querySelector('img');
+    image.src = img.currentSrc || img.src;
+    image.alt = img.alt;
+    caption.textContent = `${title} · ${index + 1} de ${slides.length}`;
+  };
+
+  const open = (slide) => {
+    const carousel = slide.closest('.carousel');
+    slides = [...carousel.querySelectorAll('.slide')];
+    title = carousel.querySelector('h3').textContent;
+    lastFocus = slide;
+    show(slides.indexOf(slide));
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+    closeBtn.focus();
+  };
+
+  const close = () => {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+    lastFocus?.focus();
+  };
+
+  document.querySelectorAll('.slide').forEach((slide) => {
+    slide.addEventListener('click', () => open(slide));
   });
-}
 
-/* ════════════════════════════════════════════════════════════════ */
-/* FLOATING CTA BUTTON                                              */
-/* ════════════════════════════════════════════════════════════════ */
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => show(index - 1));
+  nextBtn.addEventListener('click', () => show(index + 1));
 
-function initFloatingCTA() {
-  const floatingCta = getEl('.floating-cta');
-  
-  if (!floatingCta) return;
-  
-  // Mostrar/esconder com scroll
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.scrollY;
-    
-    if (currentScroll > 500) {
-      floatingCta.style.opacity = '1';
-      floatingCta.style.pointerEvents = 'auto';
-    } else {
-      floatingCta.style.opacity = '0.3';
-      floatingCta.style.pointerEvents = 'none';
+  lightbox.addEventListener('click', (event) => {
+    if (event.target === lightbox) close();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (event.key === 'Escape') close();
+    if (event.key === 'ArrowLeft') show(index - 1);
+    if (event.key === 'ArrowRight') show(index + 1);
+    if (event.key === 'Tab') {
+      // mantém o foco dentro da janela enquanto ela está aberta
+      const focusable = [closeBtn, prevBtn, nextBtn];
+      const i = focusable.indexOf(document.activeElement);
+      event.preventDefault();
+      focusable[(i + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length].focus();
     }
-    
-    lastScroll = currentScroll;
+  });
+
+  // Deslizar o dedo para trocar de imagem no celular
+  let touchX = null;
+  lightbox.addEventListener('touchstart', (event) => { touchX = event.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener('touchend', (event) => {
+    if (touchX === null) return;
+    const delta = event.changedTouches[0].clientX - touchX;
+    if (Math.abs(delta) > 50) show(index + (delta < 0 ? 1 : -1));
+    touchX = null;
   });
 }
-
-/* ════════════════════════════════════════════════════════════════ */
-/* FORM VALIDATION                                                  */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initFormValidation() {
-  const forms = getEls('form');
-  
-  forms.forEach(form => {
-    form.addEventListener('submit', (e) => {
-      const inputs = form.querySelectorAll('input[required], textarea[required]');
-      let isValid = true;
-      
-      inputs.forEach(input => {
-        if (!input.value.trim()) {
-          input.classList.add('error');
-          isValid = false;
-        } else {
-          input.classList.remove('error');
-        }
-      });
-      
-      if (!isValid) {
-        e.preventDefault();
-      }
-    });
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* LAZY LOADING IMAGES                                              */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initLazyLoading() {
-  if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src || img.src;
-          img.classList.add('loaded');
-          imageObserver.unobserve(img);
-        }
-      });
-    });
-    
-    getEls('img[data-src]').forEach(img => {
-      imageObserver.observe(img);
-    });
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* PARALLAX EFFECT                                                  */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initParallax() {
-  const heroSection = getEl('.hero');
-  
-  if (!heroSection) return;
-  
-  window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const speed = 0.5;
-    heroSection.style.transform = `translateY(${scrolled * speed}px)`;
-  }, { passive: true });
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* PERFORMANCE MONITORING                                           */
-/* ════════════════════════════════════════════════════════════════ */
-
-function initPerformanceMonitoring() {
-  if ('PerformanceObserver' in window) {
-    try {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach(entry => {
-          if (entry.duration > 100) {
-            console.warn(`⚠️ Slow Task: ${entry.name} - ${entry.duration.toFixed(2)}ms`);
-          }
-        });
-      });
-      observer.observe({ entryTypes: ['longtask'] });
-    } catch (e) {
-      // LongTask API não disponível
-    }
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* INICIAR PARALLAX E PERFORMANCE                                   */
-/* ════════════════════════════════════════════════════════════════ */
-
-window.addEventListener('load', () => {
-  initParallax();
-  initLazyLoading();
-  initPerformanceMonitoring();
-});
