@@ -130,18 +130,34 @@
     }
     
     @media (max-width: 640px) {
+      .nav-menu {
+        background: linear-gradient(135deg, #4A7BA7 0%, #2C5282 100%) !important;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0 !important;
+        padding: 15px 0 !important;
+        box-shadow: 0 8px 20px rgba(26, 58, 82, 0.3);
+      }
+      
       .nav-link {
         background: transparent !important;
         border-color: transparent !important;
         color: #FFFFFF !important;
+        border-radius: 0 !important;
+        padding: 12px 20px !important;
+        margin: 0 !important;
+        border: none !important;
       }
       
       .nav-link:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(255, 255, 255, 0.15) !important;
       }
       
       .nav-link.active {
-        background: rgba(255, 255, 255, 0.2) !important;
+        background: rgba(255, 255, 255, 0.25) !important;
       }
     }
     
