@@ -176,11 +176,13 @@ function initMarquee(openLightbox) {
       item.className = 'marquee-item';
       item.tabIndex = -1;
 
+      // Versão mini (360px). Não usa loading="lazy": a faixa se move por animação, sem rolar a
+      // página, e o Chrome/Safari do celular nem sempre percebem que a imagem entrou na tela.
       const img = document.createElement('img');
-      img.src = slide.querySelector('img').getAttribute('src');
+      img.dataset.src = slide.querySelector('img').getAttribute('src').replace('-thumb.webp', '-mini.webp');
       img.alt = '';
-      img.loading = 'lazy';
       img.decoding = 'async';
+      img.fetchPriority = 'low';
 
       item.append(img);
       item.addEventListener('click', () => openLightbox(slide, item));
@@ -191,6 +193,16 @@ function initMarquee(openLightbox) {
 
   // Dois grupos iguais: quando o primeiro sai da tela, o segundo ocupa o lugar e o loop não tem emenda
   track.append(buildGroup(), buildGroup());
+
+  // Baixa as minis depois que o essencial da página carregou
+  const loadImages = () => {
+    track.querySelectorAll('img[data-src]').forEach((img) => {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+  };
+  if (document.readyState === 'complete') loadImages();
+  else window.addEventListener('load', loadImages, { once: true });
 
   const setSpeed = () => {
     const pixelsPerSecond = 45;
