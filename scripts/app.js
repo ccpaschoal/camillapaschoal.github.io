@@ -340,12 +340,27 @@ function initLightbox() {
   let title = '';
   let lastFocus = null;
 
+  const fullSrc = (slide) => {
+    const img = slide.querySelector('img');
+    return img.dataset.full || img.getAttribute('src');
+  };
+
   const show = (i) => {
     index = (i + slides.length) % slides.length;
     const img = slides[index].querySelector('img');
-    image.src = img.getAttribute('src');
+    // mostra a miniatura (já carregada) na hora e troca pela versão grande quando ela chegar
+    image.src = img.currentSrc || img.src;
+    const full = new Image();
+    const target = index;
+    full.onload = () => { if (target === index) image.src = full.src; };
+    full.src = fullSrc(slides[index]);
     image.alt = img.alt;
     caption.textContent = `${title} · ${index + 1} de ${slides.length}`;
+
+    // adianta o download da próxima e da anterior
+    [index + 1, index - 1].forEach((n) => {
+      new Image().src = fullSrc(slides[(n + slides.length) % slides.length]);
+    });
   };
 
   const open = (slide, returnFocusTo = slide) => {
