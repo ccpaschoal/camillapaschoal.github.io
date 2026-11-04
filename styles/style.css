@@ -1126,7 +1126,6 @@ main {
     min-width: 0;
   }
 
-  .carousel--panorama .carousel-controls,
   .panorama-swipe {
     display: none;
   }
@@ -1932,7 +1931,10 @@ main {
 /* nome do carrossel bem grande e apagado no fundo, como o "exclusive" do vídeo */
 .cf-word {
   position: absolute;
-  inset: auto 0 26%;
+  top: 58%;
+  left: -40px;
+  right: -40px;
+  transform: translateY(-50%);
   z-index: 0;
   overflow: hidden;
   color: var(--heading);
@@ -1954,7 +1956,7 @@ main {
   z-index: 2;
 }
 
-.coverflow .rail {
+.cf-rail {
   position: relative;
   z-index: 1;
   display: block;
@@ -1968,11 +1970,11 @@ main {
   user-select: none;
 }
 
-.coverflow .rail.is-dragging {
+.cf-rail.is-dragging {
   cursor: grabbing;
 }
 
-.coverflow .slide {
+.cf-rail .slide {
   position: absolute;
   top: 8px;
   left: 50%;
@@ -1984,26 +1986,26 @@ main {
   will-change: transform;
 }
 
-.coverflow .slide img {
+.cf-rail .slide img {
   pointer-events: none;
   -webkit-user-drag: none;
 }
 
 /* hover do carrossel antigo não combina com as posições fixas */
-.coverflow .slide:hover,
-.coverflow .slide:focus-visible {
+.cf-rail .slide:hover,
+.cf-rail .slide:focus-visible {
   box-shadow: var(--shadow-lg);
 }
 
-.coverflow .slide:hover img {
+.cf-rail .slide:hover img {
   transform: none;
 }
 
-.coverflow .slide:not(.is-center)::after {
+.cf-rail .slide:not(.is-center)::after {
   display: none;
 }
 
-.coverflow .slide.is-center:focus-visible {
+.cf-rail .slide.is-center:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
@@ -2076,7 +2078,101 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .coverflow .slide {
+  .cf-rail .slide {
     transition: none;
+  }
+}
+
+/* ── Transição do vídeo: o título se escreve letra por letra e o conteúdo sobe ── */
+
+.section-title.is-split .word,
+.contact h2.is-split .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.js .is-split .ch {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(0.25em);
+  transition: opacity 0.5s var(--ease), filter 0.5s var(--ease), transform 0.5s var(--ease);
+  transition-delay: calc(var(--c) * 38ms + 150ms);
+}
+
+.js .tile.is-in .is-split .ch {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+/* os slides sobem para o lugar logo depois que o quadrado aparece */
+.js .coverflow .cf-rail {
+  opacity: 0;
+  transform: translateY(70px);
+  transition: opacity 0.9s var(--ease) 0.25s, transform 0.9s var(--ease) 0.25s;
+}
+
+.js .coverflow.is-in .cf-rail {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .is-split .ch,
+  .js .coverflow .cf-rail {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Minha Apresentação: imagens 1080x1350 (4:5) sem cortar em quadrado ── */
+
+.marquee-item--tall {
+  aspect-ratio: 4 / 5;
+  align-self: center;
+}
+
+/* a proporção fica na própria imagem, para o Safari do iPhone não achatar o quadro */
+.rail--panorama .slide {
+  height: auto;
+  align-self: flex-start;
+}
+
+.rail--panorama .slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+/* Minha Apresentação no estilo garrafas: slides 4:5 (1080x1350) */
+.coverflow--tall {
+  --cf-size: clamp(170px, 26vw, 290px);
+}
+
+.coverflow--tall .cf-rail {
+  height: calc(var(--cf-size) * 1.25 + 24px);
+}
+
+.coverflow--tall .cf-rail .slide {
+  aspect-ratio: 4 / 5;
+}
+
+.panorama-label {
+  position: relative;
+  z-index: 2;
+  margin: clamp(28px, 4vw, 40px) 0 12px;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .coverflow--tall {
+    --cf-size: min(56vw, 230px);
   }
 }

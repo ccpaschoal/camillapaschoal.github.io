@@ -145,7 +145,23 @@ function initStagger() {
   });
 }
 
+// Títulos que aparecem letra por letra (como o "Our Wine Collection" do vídeo)
+function splitTitles() {
+  document.querySelectorAll('.section-title, .contact h2').forEach((title) => {
+    const text = title.textContent.trim();
+    title.setAttribute('aria-label', text);
+    let n = 0;
+    title.innerHTML = text.split(' ').map((word) => {
+      const letters = [...word].map((ch) => `<span class="ch" style="--c:${n++}">${ch}</span>`).join('');
+      n++; // pausa curtinha entre as palavras
+      return `<span class="word" aria-hidden="true">${letters}</span>`;
+    }).join(' ');
+    title.classList.add('is-split');
+  });
+}
+
 function initTiles() {
+  splitTitles();
   const tiles = [...document.querySelectorAll('.tile')];
 
   // atraso em cascata entre quadrados vizinhos do mesmo grupo
@@ -186,6 +202,7 @@ function initCarousels() {
   document.querySelectorAll('.coverflow').forEach(initCoverflow);
 
   document.querySelectorAll('.carousel:not(.coverflow)').forEach((carousel) => {
+    if (!carousel.querySelector('[data-dir="prev"]')) return;
     const rail = carousel.querySelector('.rail');
     const prev = carousel.querySelector('[data-dir="prev"]');
     const next = carousel.querySelector('[data-dir="next"]');
@@ -215,7 +232,9 @@ function initCarousels() {
 /* ── Slides como garrafas: o do meio grande, os vizinhos menores ── */
 
 function initCoverflow(carousel) {
-  const rail = carousel.querySelector('.rail');
+  // a faixa contínua da Minha Apresentação (rail--panorama) fica de fora, embaixo
+  const rail = carousel.querySelector('.rail:not(.rail--panorama)');
+  rail.classList.add('cf-rail');
   const slides = [...rail.querySelectorAll('.slide')];
   const prev = carousel.querySelector('[data-dir="prev"]');
   const next = carousel.querySelector('[data-dir="next"]');
@@ -226,7 +245,7 @@ function initCoverflow(carousel) {
   word.className = 'cf-word';
   word.setAttribute('aria-hidden', 'true');
   word.textContent = carousel.querySelector('h3').textContent;
-  carousel.prepend(word);
+  rail.prepend(word);
 
   // contador e barrinha de progresso embaixo
   const footer = document.createElement('div');
@@ -334,7 +353,7 @@ function initMarquee(openLightbox) {
   if (!track) return;
 
   // Intercala os carrosséis (capa de cada um, depois o 1º slide de cada…) para variar o que aparece
-  const carousels = [...document.querySelectorAll('.carousel')].map((c) => [...c.querySelectorAll('.slide')]);
+  const carousels = [...document.querySelectorAll('.carousel')].map((c) => [...c.querySelectorAll('.rail:not(.rail--panorama) .slide')]);
   const longest = Math.max(...carousels.map((slides) => slides.length));
   const order = [];
   for (let i = 0; i < longest; i++) {
@@ -347,7 +366,8 @@ function initMarquee(openLightbox) {
     order.forEach((slide) => {
       const item = document.createElement('button');
       item.type = 'button';
-      item.className = 'marquee-item';
+      // slides da Minha Apresentação são 1080x1350 (4:5), não quadrados
+      item.className = slide.closest('.carousel--panorama') ? 'marquee-item marquee-item--tall' : 'marquee-item';
       item.tabIndex = -1;
 
       // Versão mini (360px). Não usa loading="lazy": a faixa se move por animação, sem rolar a
@@ -442,7 +462,7 @@ function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   const totals = {
     projects: document.querySelectorAll('.carousel').length,
-    slides: document.querySelectorAll('.carousel .slide').length,
+    slides: document.querySelectorAll('.carousel .rail:not(.rail--panorama) .slide').length,
   };
 
   counters.forEach((el) => {
@@ -551,7 +571,7 @@ function initLightbox() {
 
   const open = (slide, returnFocusTo = slide) => {
     const carousel = slide.closest('.carousel');
-    slides = [...carousel.querySelectorAll('.slide')];
+    slides = [...slide.closest('.rail').querySelectorAll('.slide')];
     title = carousel.querySelector('h3').textContent;
     lastFocus = returnFocusTo;
     show(slides.indexOf(slide));
