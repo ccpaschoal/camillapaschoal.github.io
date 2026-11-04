@@ -436,9 +436,13 @@ main {
   padding-top: calc(var(--nav-height) + 24px);
 }
 
+/* As seções não têm mais um painel único: cada conteúdo vira um quadrado separado (.tile) */
 .section {
-  margin-bottom: 32px;
-  padding: clamp(32px, 5vw, 64px);
+  margin-bottom: clamp(48px, 7vw, 88px);
+}
+
+.tile {
+  padding: clamp(24px, 3.5vw, 44px);
   border-radius: var(--radius-lg);
   background: var(--surface);
   border: 1px solid var(--panel-border);
@@ -447,31 +451,6 @@ main {
   backdrop-filter: blur(12px);
 }
 
-/* Cartas empilhadas: cada seção para no lugar e a seguinte sobe por cima dela.
-   O app.js calcula --stack-top: seções curtas param logo abaixo do menu; seções mais
-   altas que a tela só param quando o fim delas aparece, para nada ficar escondido. */
-.stack > .section {
-  position: sticky;
-  top: var(--stack-top, 0px);
-  background: var(--surface-strong);
-  box-shadow: 0 -10px 40px rgba(15, 42, 64, 0.16), var(--shadow-md);
-  /* várias camadas com desfoque umas sobre as outras pesam no celular */
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  /* --cover vai de 0 (livre) a 1 (coberta pela próxima): a carta encolhe um pouco */
-  scale: calc(1 - var(--cover, 0) * 0.05);
-  transform-origin: 50% var(--cover-origin, 0px);
-}
-
-/* O conteúdo da carta coberta some aos poucos e volta ao rolar para cima */
-.stack > .section > * {
-  opacity: calc(1 - var(--cover, 0) * 0.85);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stack > .section { scale: none; }
-  .stack > .section > * { opacity: 1; }
-}
 
 .section-header {
   max-width: 680px;
@@ -1244,10 +1223,16 @@ main {
 }
 
 /* Fora de foco: sem cartão e com círculo cinza (sem apagar o texto, para continuar legível) */
+/* sem o painel da seção, os passos fora de foco também ficam num quadrado de vidro, mais apagado */
 .js .story-step .feature {
-  background: transparent;
-  border-color: transparent;
-  transform: scale(0.97);
+  background: var(--surface);
+  border-color: var(--panel-border);
+  opacity: 0.75;
+  transform: scale(0.96);
+}
+
+.js .story-step.is-active .feature {
+  opacity: 1;
 }
 
 .js .story-step .feature-icon {
@@ -1544,14 +1529,30 @@ body.no-scroll {
   width: 56px;
 }
 
-.js .carousel .slide {
+/* Quadrados: aparecem um por um ao entrar na tela, somem ao sair e voltam ao rolar de volta */
+.js .tile {
   opacity: 0;
+  transform: translateY(32px) scale(0.96);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
 }
 
-.js .carousel.is-visible .slide {
+.js .tile.is-in {
   opacity: 1;
-  animation: reveal-right 0.35s var(--ease) backwards;
-  animation-delay: calc(var(--i, 0) * 40ms + 50ms);
+  transform: none;
+}
+
+.js .service-card.tile.is-in:hover {
+  transform: translateY(-6px);
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .tile {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ── Keyframes ────────────────────────────────────────────────── */
@@ -1728,8 +1729,11 @@ body.no-scroll {
 
 @media (max-width: 600px) {
   .section {
-    margin-bottom: 20px;
-    padding: 28px 20px;
+    margin-bottom: 40px;
+  }
+
+  .tile {
+    padding: 24px 18px;
     border-radius: var(--radius-md);
   }
 
@@ -1830,5 +1834,249 @@ body.no-scroll {
   .js .reveal,
   .js .carousel .slide {
     opacity: 1;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Conteúdo dividido em quadrados
+   ══════════════════════════════════════════════════════════════ */
+
+main {
+  --tile-gap: clamp(14px, 2vw, 22px);
+}
+
+.section-header.tile {
+  max-width: 820px;
+  margin: 0 auto var(--tile-gap);
+}
+
+/* Topo: texto e celular em quadrados separados */
+.hero {
+  gap: var(--tile-gap);
+  align-items: stretch;
+}
+
+.hero-content.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: none;
+}
+
+@media (max-width: 860px) {
+  .hero-content.tile {
+    align-items: center;
+  }
+}
+
+.hero-visual.tile {
+  display: grid;
+  place-items: center;
+}
+
+/* Sobre: foto, texto e cada número em seu quadrado */
+.about {
+  gap: var(--tile-gap);
+  align-items: stretch;
+  max-width: none;
+}
+
+.about-photo {
+  display: grid;
+  place-items: center;
+}
+
+.about-content.tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stats {
+  gap: var(--tile-gap);
+  max-width: none;
+  margin-top: var(--tile-gap);
+}
+
+.stat.tile {
+  padding: 28px 16px;
+  border-top: 3px solid var(--gold-400);
+  text-align: center;
+}
+
+/* Portfólio: cada carrossel é um quadrado independente */
+.carousel + .carousel {
+  margin-top: var(--tile-gap);
+  padding-top: clamp(24px, 3.5vw, 44px);
+  border-top: 1px solid var(--panel-border);
+}
+
+.services-grid {
+  gap: var(--tile-gap);
+}
+
+.service-card.tile {
+  padding: 28px;
+  border-top: 4px solid var(--wine-700);
+}
+
+/* ── Slides como garrafas: o do meio grande, os vizinhos menores e juntinhos ── */
+
+.coverflow {
+  --cf-size: clamp(190px, 34vw, 340px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* nome do carrossel bem grande e apagado no fundo, como o "exclusive" do vídeo */
+.cf-word {
+  position: absolute;
+  inset: auto 0 26%;
+  z-index: 0;
+  overflow: hidden;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 11vw, 8.5rem);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-align: center;
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+
+.coverflow .carousel-header {
+  position: relative;
+  z-index: 2;
+}
+
+.coverflow .rail {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: calc(var(--cf-size) + 24px);
+  margin: 8px 0 0;
+  padding: 0;
+  overflow: visible;
+  scroll-snap-type: none;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+
+.coverflow .rail.is-dragging {
+  cursor: grabbing;
+}
+
+.coverflow .slide {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: var(--cf-size);
+  margin-left: calc(var(--cf-size) / -2);
+  box-shadow: var(--shadow-lg);
+  transform-origin: 50% 50%;
+  transition: transform 0.6s var(--ease), opacity 0.6s var(--ease), filter 0.6s var(--ease);
+  will-change: transform;
+}
+
+.coverflow .slide img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* hover do carrossel antigo não combina com as posições fixas */
+.coverflow .slide:hover,
+.coverflow .slide:focus-visible {
+  box-shadow: var(--shadow-lg);
+}
+
+.coverflow .slide:hover img {
+  transform: none;
+}
+
+.coverflow .slide:not(.is-center)::after {
+  display: none;
+}
+
+.coverflow .slide.is-center:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.cf-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.cf-count {
+  white-space: nowrap;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cf-bar {
+  position: relative;
+  width: min(160px, 30vw);
+  height: 3px;
+  border-radius: 3px;
+  background: var(--gray-300);
+  overflow: hidden;
+}
+
+.cf-bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--cf-progress, 0%);
+  background: var(--wine-700);
+  border-radius: inherit;
+  transition: width 0.6s var(--ease);
+}
+
+@media (max-width: 860px) {
+  .about {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .coverflow {
+    --cf-size: min(62vw, 260px);
+  }
+
+  .cf-hint {
+    display: none;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat.tile {
+    padding: 18px 8px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coverflow .slide {
+    transition: none;
   }
 }

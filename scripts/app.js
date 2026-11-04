@@ -11,14 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initActiveSection();
   initStagger();
-  initReveal();
+  initTiles();
   initCarousels();
   const openLightbox = initLightbox();
   initMarquee(openLightbox);
   initHeroPhone();
   initCounters();
   initStory();
-  initStack();
   document.getElementById('year').textContent = new Date().getFullYear();
 });
 
@@ -103,97 +102,6 @@ function initNavbar() {
   update();
 }
 
-/* ── Seções empilhadas (a próxima sobe por cima da anterior) ───── */
-
-function initStack() {
-  const main = document.querySelector('main');
-  const sections = [...main.querySelectorAll(':scope > .section')];
-  if (sections.length < 2 || !CSS.supports('position', 'sticky')) return;
-
-  sections.forEach((section, i) => { section.style.zIndex = i + 1; });
-  main.classList.add('stack');
-
-  // Posição de cada seção como se não estivesse empilhada (usada pelos links do menu)
-  const naturalTop = new Map();
-
-  const layout = () => {
-    const navOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-    const viewport = window.innerHeight;
-
-    main.classList.remove('stack');
-    sections.forEach((section) => {
-      naturalTop.set(section, section.getBoundingClientRect().top + window.scrollY);
-    });
-    main.classList.add('stack');
-
-    // Cada carta para um pouco mais abaixo da anterior, para a borda das de baixo continuar aparecendo
-    const peek = window.innerWidth <= 600 ? 10 : 16;
-    sections.forEach((section, i) => {
-      // Curta: para abaixo do menu (e das bordas das anteriores). Alta: para quando o rodapé dela chega ao fim da tela.
-      const top = Math.min(navOffset + i * peek, viewport - section.offsetHeight - 16);
-      stickTop.set(section, top);
-      section.style.setProperty('--stack-top', `${Math.round(top)}px`);
-      // encolhe a partir do meio do pedaço que fica visível (em cartas altas, o topo está fora da tela)
-      const visibleTop = Math.max(top, 0);
-      const visibleBottom = Math.min(top + section.offsetHeight, viewport);
-      section.style.setProperty('--cover-origin', `${Math.round((visibleTop + visibleBottom) / 2 - top)}px`);
-    });
-    updateCover();
-  };
-
-  // Quando a próxima carta sobe por cima, o conteúdo da de baixo some aos poucos e a carta encolhe
-  // um pouco. Ao rolar de volta, ele reaparece. A carta em si nunca sai da tela.
-  const stickTop = new Map();
-  const updateCover = () => {
-    const viewport = window.innerHeight;
-    sections.forEach((section, i) => {
-      const next = sections[i + 1];
-      let cover = 0;
-      if (next && !reduceMotion) {
-        const distance = next.getBoundingClientRect().top - (stickTop.get(next) || 0);
-        cover = Math.min(Math.max(1 - distance / (viewport * 0.6), 0), 1);
-      }
-      section.style.setProperty('--cover', cover.toFixed(3));
-    });
-  };
-
-  let coverTicking = false;
-  window.addEventListener('scroll', () => {
-    if (!coverTicking) {
-      coverTicking = true;
-      requestAnimationFrame(() => { updateCover(); coverTicking = false; });
-    }
-  }, { passive: true });
-
-  let frame = 0;
-  const schedule = () => {
-    cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(layout);
-  };
-
-  layout();
-  window.addEventListener('resize', schedule);
-  window.addEventListener('load', schedule);
-  // Carrosséis e imagens podem mudar a altura das seções depois de carregar
-  if ('ResizeObserver' in window) {
-    const observer = new ResizeObserver(schedule);
-    sections.forEach((section) => observer.observe(section));
-  }
-
-  // Links do menu: uma seção parada no fundo parece "já estar na tela" para o navegador,
-  // então rolamos até a posição real dela.
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    const target = document.getElementById(link.getAttribute('href').slice(1));
-    if (!target || !sections.includes(target)) return;
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      const navOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-      window.scrollTo({ top: naturalTop.get(target) - navOffset, behavior: reduceMotion ? 'auto' : 'smooth' });
-      history.replaceState(null, '', `#${target.id}`);
-    });
-  });
-}
-
 /* ── Destaca no menu a seção visível ──────────────────────────── */
 
 function initActiveSection() {
@@ -237,11 +145,20 @@ function initStagger() {
   });
 }
 
-function initReveal() {
-  const items = document.querySelectorAll('.reveal');
+function initTiles() {
+  const tiles = [...document.querySelectorAll('.tile')];
 
-  if (!('IntersectionObserver' in window)) {
-    items.forEach((item) => item.classList.add('is-visible'));
+  // atraso em cascata entre quadrados vizinhos do mesmo grupo
+  const groups = new Map();
+  tiles.forEach((tile) => {
+    const list = groups.get(tile.parentElement) || [];
+    list.push(tile);
+    groups.set(tile.parentElement, list);
+  });
+  groups.forEach((list) => list.forEach((tile, i) => tile.style.setProperty('--i', Math.min(i, 5))));
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    tiles.forEach((tile) => tile.classList.add('is-in'));
     return;
   }
 
@@ -249,27 +166,26 @@ function initReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
       responded = true;
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
+      // entra quando aparece, some quando sai da tela e volta ao rolar de volta
+      entries.forEach((entry) => entry.target.classList.toggle('is-in', entry.isIntersecting));
     },
-    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
   );
 
-  items.forEach((item) => observer.observe(item));
+  tiles.forEach((tile) => observer.observe(tile));
 
   // Segurança: se o navegador não responder, mostra tudo em vez de deixar o conteúdo invisível
   setTimeout(() => {
-    if (!responded) items.forEach((item) => item.classList.add('is-visible'));
+    if (!responded) tiles.forEach((tile) => tile.classList.add('is-in'));
   }, 3000);
 }
 
 /* ── Carrosséis ───────────────────────────────────────────────── */
 
 function initCarousels() {
-  document.querySelectorAll('.carousel').forEach((carousel) => {
+  document.querySelectorAll('.coverflow').forEach(initCoverflow);
+
+  document.querySelectorAll('.carousel:not(.coverflow)').forEach((carousel) => {
     const rail = carousel.querySelector('.rail');
     const prev = carousel.querySelector('[data-dir="prev"]');
     const next = carousel.querySelector('[data-dir="next"]');
@@ -294,6 +210,121 @@ function initCarousels() {
     window.addEventListener('resize', updateButtons);
     updateButtons();
   });
+}
+
+/* ── Slides como garrafas: o do meio grande, os vizinhos menores ── */
+
+function initCoverflow(carousel) {
+  const rail = carousel.querySelector('.rail');
+  const slides = [...rail.querySelectorAll('.slide')];
+  const prev = carousel.querySelector('[data-dir="prev"]');
+  const next = carousel.querySelector('[data-dir="next"]');
+  if (!slides.length) return;
+
+  // nome do carrossel grande e apagado no fundo
+  const word = document.createElement('span');
+  word.className = 'cf-word';
+  word.setAttribute('aria-hidden', 'true');
+  word.textContent = carousel.querySelector('h3').textContent;
+  carousel.prepend(word);
+
+  // contador e barrinha de progresso embaixo
+  const footer = document.createElement('div');
+  footer.className = 'cf-footer';
+  footer.innerHTML = '<span class="cf-count"></span><span class="cf-bar"><span></span></span><span class="cf-hint">arraste ou use as setas</span>';
+  rail.after(footer);
+  const count = footer.querySelector('.cf-count');
+  const bar = footer.querySelector('.cf-bar');
+
+  // distância (em larguras de slide) e tamanho de cada posição a partir do meio
+  const OFFSET = [0, 0.56, 0.98, 1.3];
+  const SCALE = [1, 0.74, 0.56, 0.44];
+  const OPACITY = [1, 0.92, 0.6, 0];
+  const BRIGHT = [1, 0.72, 0.58, 0.5];
+
+  let current = 0;
+
+  const render = () => {
+    const size = slides[0].offsetWidth;
+    slides.forEach((slide, i) => {
+      const d = i - current;
+      const ad = Math.min(Math.abs(d), 3);
+      const x = Math.sign(d) * OFFSET[ad] * size;
+      slide.style.transform = `translateX(${x.toFixed(1)}px) scale(${SCALE[ad]})`;
+      slide.style.opacity = OPACITY[ad];
+      slide.style.filter = ad ? `brightness(${BRIGHT[ad]})` : 'none';
+      slide.style.zIndex = 10 - ad;
+      slide.style.visibility = Math.abs(d) > 3 ? 'hidden' : 'visible';
+      slide.classList.toggle('is-center', d === 0);
+      slide.tabIndex = d === 0 ? 0 : -1;
+      slide.setAttribute('aria-hidden', String(d !== 0));
+    });
+    count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    bar.style.setProperty('--cf-progress', `${((current + 1) / slides.length) * 100}%`);
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+  };
+
+  const go = (index) => {
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    render();
+  };
+
+  prev.addEventListener('click', () => go(current - 1));
+  next.addEventListener('click', () => go(current + 1));
+
+  // Clicar num vizinho traz ele para o meio (sem abrir a imagem); o do meio abre em tela cheia
+  slides.forEach((slide, i) => {
+    slide.addEventListener('click', (event) => {
+      if (dragged) {
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (i !== current) {
+        event.stopImmediatePropagation();
+        go(i);
+      }
+    });
+  });
+
+  rail.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); go(current - 1); slides[current].focus(); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); go(current + 1); slides[current].focus(); }
+  });
+
+  // Arrastar com o mouse ou o dedo
+  let startX = null;
+  let dragged = false;
+  rail.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return;
+    startX = event.clientX;
+    dragged = false;
+  });
+  rail.addEventListener('pointermove', (event) => {
+    if (startX === null) return;
+    const delta = event.clientX - startX;
+    if (Math.abs(delta) > 8) {
+      dragged = true;
+      rail.classList.add('is-dragging');
+    }
+    // cada meio slide arrastado passa um slide
+    if (Math.abs(delta) > slides[0].offsetWidth * 0.45) {
+      go(current + (delta < 0 ? 1 : -1));
+      startX = event.clientX;
+    }
+  });
+  const end = () => {
+    startX = null;
+    rail.classList.remove('is-dragging');
+    // o clique que vem logo depois do arraste não deve abrir a imagem
+    setTimeout(() => { dragged = false; }, 0);
+  };
+  rail.addEventListener('pointerup', end);
+  rail.addEventListener('pointercancel', end);
+  rail.addEventListener('pointerleave', () => { if (startX !== null) end(); });
+
+  window.addEventListener('resize', render);
+  render();
 }
 
 /* ── Faixa com os posts dos carrosséis passando ───────────────── */
