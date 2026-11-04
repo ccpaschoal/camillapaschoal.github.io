@@ -7,6 +7,7 @@ document.documentElement.classList.add('js');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   initNavbar();
   initActiveSection();
   initStagger();
@@ -19,6 +20,42 @@ document.addEventListener('DOMContentLoaded', () => {
   initStory();
   document.getElementById('year').textContent = new Date().getFullYear();
 });
+
+/* ── Modo claro / escuro ──────────────────────────────────────── */
+
+function initTheme() {
+  const root = document.documentElement;
+  const toggle = document.querySelector('.theme-toggle');
+  const metaColor = document.querySelector('meta[name="theme-color"]');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const apply = (theme, animate) => {
+    if (animate && !reduceMotion) {
+      root.classList.add('theme-transition');
+      setTimeout(() => root.classList.remove('theme-transition'), 450);
+    }
+    const dark = theme === 'dark';
+    root.setAttribute('data-theme', theme);
+    toggle.setAttribute('aria-pressed', String(dark));
+    toggle.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo escuro');
+    metaColor.setAttribute('content', dark ? '#16324A' : '#6BA3D8');
+  };
+
+  apply(root.getAttribute('data-theme') || 'light', false);
+
+  toggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(next, true);
+    try { localStorage.setItem('tema', next); } catch (e) { /* navegação privada pode bloquear */ }
+  });
+
+  // Se a pessoa nunca escolheu pelo botão, acompanha a mudança do sistema
+  systemDark.addEventListener('change', (event) => {
+    let saved = null;
+    try { saved = localStorage.getItem('tema'); } catch (e) { /* ignora */ }
+    if (!saved) apply(event.matches ? 'dark' : 'light', true);
+  });
+}
 
 /* ── Navbar, menu mobile e barra de progresso ─────────────────── */
 
@@ -68,22 +105,36 @@ function initNavbar() {
 /* ── Destaca no menu a seção visível ──────────────────────────── */
 
 function initActiveSection() {
+  const sections = [...document.querySelectorAll('main section[id]')];
   const links = new Map(
     [...document.querySelectorAll('.nav-link')].map((link) => [link.getAttribute('href').slice(1), link])
   );
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        links.forEach((link) => link.classList.remove('is-active'));
-        links.get(entry.target.id)?.classList.add('is-active');
-      });
-    },
-    { rootMargin: '-45% 0px -50% 0px' }
-  );
+  // A seção ativa é a última cujo topo já passou de 40% da tela. No topo da página nenhuma fica marcada.
+  let ticking = false;
+  const update = () => {
+    const line = window.innerHeight * 0.4;
+    let current = null;
+    sections.forEach((section) => {
+      if (section.getBoundingClientRect().top <= line) current = section.id;
+    });
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom) current = sections[sections.length - 1].id;
+    links.forEach((link, id) => link.classList.toggle('is-active', id === current));
+    ticking = false;
+  };
 
-  document.querySelectorAll('main section[id]').forEach((section) => observer.observe(section));
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  // o navegador pode restaurar a posição da rolagem depois de carregar a página
+  window.addEventListener('load', update);
+  window.addEventListener('pageshow', update);
+  update();
 }
 
 /* ── Animações de entrada ─────────────────────────────────────── */
