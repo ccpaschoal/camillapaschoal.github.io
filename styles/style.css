@@ -1022,6 +1022,111 @@ main {
   transform: scale(1);
 }
 
+/* ── Destaque: carrossel panorâmico (Minha Apresentação) ──────── */
+
+.carousel-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--wine-700);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panorama-text {
+  max-width: 640px;
+  margin: -4px 0 20px;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+/* Moldura escura: os slides ficam colados, como uma tira de filme */
+.panorama-stage {
+  padding: clamp(10px, 1.6vw, 16px);
+  border-radius: var(--radius-md);
+  background: #0B0B0C;
+  box-shadow: var(--shadow-lg), inset 0 0 0 1px rgba(139, 30, 45, 0.45);
+}
+
+.rail--panorama {
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-sm);
+  scroll-snap-type: x mandatory;
+}
+
+.rail--panorama .slide {
+  flex: 0 0 min(72%, 300px);
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+  box-shadow: none;
+  background: #000;
+}
+
+/* sem "pular" no hover para a emenda entre os slides não abrir */
+.rail--panorama .slide:hover,
+.rail--panorama .slide:focus-visible {
+  transform: none;
+  box-shadow: none;
+}
+
+.rail--panorama .slide:hover img {
+  transform: none;
+  filter: brightness(1.12);
+}
+
+.rail--panorama .slide:focus-visible {
+  outline: 3px solid var(--sand-300);
+  outline-offset: -3px;
+}
+
+.rail--panorama .slide img {
+  transition: filter 0.3s var(--ease);
+}
+
+.panorama-swipe {
+  margin-top: 12px;
+  color: var(--accent-text);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.panorama-swipe span {
+  display: inline-block;
+  animation: swipe-nudge 1.6s var(--ease) infinite;
+}
+
+@keyframes swipe-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+/* Telas largas: os 6 slides aparecem inteiros, lado a lado */
+@media (min-width: 900px) {
+  .rail--panorama {
+    overflow: hidden;
+  }
+
+  .rail--panorama .slide {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .carousel--panorama .carousel-controls,
+  .panorama-swipe {
+    display: none;
+  }
+}
+
 /* ── Serviços ─────────────────────────────────────────────────── */
 
 .services-grid {
