@@ -1528,32 +1528,6 @@ body.no-scroll {
   width: 56px;
 }
 
-/* Quadrados: aparecem um por um ao entrar na tela, somem ao sair e voltam ao rolar de volta */
-.js .tile {
-  opacity: 0;
-  transform: translateY(32px) scale(0.96);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
-  transition-delay: calc(var(--i, 0) * 90ms);
-}
-
-.js .tile.is-in {
-  opacity: 1;
-  transform: none;
-}
-
-.js .service-card.tile.is-in:hover {
-  transform: translateY(-6px);
-  transition-delay: 0s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .js .tile {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
 /* ── Keyframes ────────────────────────────────────────────────── */
 
 @keyframes nav-in {
@@ -1974,7 +1948,7 @@ main {
   cursor: grabbing;
 }
 
-.cf-rail .slide {
+.cf-rail > .cf-item {
   position: absolute;
   top: 8px;
   left: 50%;
@@ -2078,7 +2052,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cf-rail .slide {
+  .cf-rail > .cf-item {
     transition: none;
   }
 }
@@ -2100,27 +2074,27 @@ main {
   transition-delay: calc(var(--c) * 38ms + 150ms);
 }
 
-.js .tile.is-in .is-split .ch {
+.js .is-current .is-split .ch {
   opacity: 1;
   filter: none;
   transform: none;
 }
 
 /* os slides sobem para o lugar logo depois que o quadrado aparece */
-.js .coverflow .cf-rail {
+.js .screen .cf-rail {
   opacity: 0;
   transform: translateY(70px);
   transition: opacity 0.9s var(--ease) 0.25s, transform 0.9s var(--ease) 0.25s;
 }
 
-.js .coverflow.is-in .cf-rail {
+.js .screen.is-current .cf-rail {
   opacity: 1;
   transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .js .is-split .ch,
-  .js .coverflow .cf-rail {
+  .js .screen .cf-rail {
     opacity: 1;
     filter: none;
     transform: none;
@@ -2174,5 +2148,333 @@ main {
 @media (max-width: 600px) {
   .coverflow--tall {
     --cf-size: min(56vw, 230px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Sem rolagem: cada tela é um quadrado só, e elas trocam com a
+   transição das garrafas na vertical (o app.js posiciona cada uma)
+   ══════════════════════════════════════════════════════════════ */
+
+html.deck-on,
+.deck-on body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.deck-on main {
+  padding-top: 0;
+}
+
+.deck-on .section {
+  margin: 0;
+}
+
+.deck-on .screen {
+  --peek: 64px;
+  position: fixed;
+  top: calc(var(--nav-height) + (100svh - var(--nav-height)) / 2);
+  left: 50%;
+  width: min(1120px, 100vw - 32px);
+  max-height: calc(100svh - var(--nav-height) - var(--peek) * 2);
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--wine-700) transparent;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  transition: transform 0.85s var(--ease), opacity 0.85s var(--ease), filter 0.85s var(--ease);
+  will-change: transform;
+}
+
+/* telas vizinhas: só a ponta aparece, sem rolagem própria */
+.deck-on .screen.is-near {
+  overflow: hidden;
+}
+
+.deck-on .section-header.screen {
+  width: min(820px, 100vw - 32px);
+  margin: 0;
+}
+
+/* Topo: texto, celular e a faixa de posts no mesmo quadrado */
+.hero-screen .hero {
+  min-height: 0;
+  gap: clamp(20px, 4vw, 48px);
+}
+
+.deck-on .hero-title {
+  font-size: clamp(2.2rem, 4.8vw, 3.9rem);
+}
+
+.deck-on .hero-text {
+  font-size: 1rem;
+}
+
+.deck-on .hero-phone {
+  width: clamp(200px, 19vw, 240px);
+}
+
+.hero-screen .marquee {
+  margin: clamp(18px, 3vw, 28px) calc(clamp(24px, 3.5vw, 44px) * -1) calc(clamp(24px, 3.5vw, 44px) * -1);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Sobre: foto e texto lado a lado, números embaixo, tudo no mesmo quadrado */
+#sobre .section-header,
+#servicos .section-header,
+#diferenciais .section-header {
+  margin-bottom: clamp(16px, 2.5vw, 28px);
+}
+
+#sobre .about {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+#sobre .about-photo {
+  display: grid;
+  place-items: center;
+}
+
+.deck-on #sobre .avatar {
+  width: clamp(150px, 18vw, 220px);
+}
+
+#sobre .stats {
+  margin-top: clamp(16px, 2.5vw, 28px);
+}
+
+#sobre .stat {
+  padding: 18px 12px;
+  border-top: 3px solid var(--gold-400);
+}
+
+/* Serviços e diferenciais: cards juntos num carrossel estilo garrafas */
+.cf-rail--auto {
+  --cf-size: clamp(240px, 30vw, 330px);
+}
+
+.services-grid.cf-rail > .cf-item {
+  border-top: 4px solid var(--wine-700);
+}
+
+.story-steps.cf-rail .story-step {
+  min-height: 0;
+}
+
+.story-steps.cf-rail .feature {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deck-on .story {
+  align-items: center;
+  max-width: none;
+}
+
+.deck-on .story-visual {
+  position: static;
+}
+
+.deck-on .story-phone {
+  width: clamp(190px, 17vw, 220px);
+}
+
+.cf-footer--buttons .carousel-btn {
+  width: 40px;
+  height: 40px;
+}
+
+/* Contato: rodapé dentro do quadrado */
+.contact-footer {
+  margin-top: clamp(20px, 3vw, 32px);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 860px) {
+  .deck-on .screen {
+    --peek: 44px;
+    width: calc(100vw - 24px);
+  }
+
+  #sobre .about {
+    grid-template-columns: 1fr;
+  }
+
+  .deck-on .story {
+    grid-template-columns: 1fr;
+  }
+
+  .deck-on .story-visual {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .deck-on .screen {
+    --peek: 36px;
+  }
+
+  .cf-rail--auto {
+    --cf-size: min(70vw, 280px);
+  }
+
+  .deck-on .hero-visual {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-on .screen {
+    transition: none;
+  }
+}
+
+/* ── Ajustes para cada tela caber sem rolagem ── */
+
+.deck-on .screen {
+  --peek: 40px;
+}
+
+.story-cf {
+  min-width: 0;
+}
+
+.deck-on .story {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.hero-screen .marquee {
+  padding: 12px 0;
+}
+
+.hero-screen .marquee-item {
+  width: clamp(88px, 8vw, 112px);
+}
+
+.deck-on .hero-content .hero-text {
+  margin-bottom: 20px;
+}
+
+.deck-on .hero-phone {
+  width: clamp(180px, 16vw, 210px);
+}
+
+.deck-on .coverflow--tall {
+  --cf-size: clamp(170px, 19vw, 240px);
+}
+
+.deck-on .carousel--panorama .panorama-text {
+  margin-bottom: 4px;
+}
+
+.deck-on .section-subtitle {
+  margin-top: 10px;
+}
+
+@media (max-height: 820px) and (min-width: 861px) {
+  .deck-on .coverflow:not(.coverflow--tall) {
+    --cf-size: clamp(190px, 28vw, 300px);
+  }
+
+  .deck-on .section-title {
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+  }
+}
+
+@media (max-width: 860px) {
+  .deck-on .story {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .deck-on .screen {
+    --peek: 30px;
+  }
+}
+
+.deck-on .hero-title {
+  font-size: clamp(2rem, 4.2vw, 3.3rem);
+}
+
+.deck-on .hero-tag {
+  margin-bottom: 16px;
+}
+
+.deck-on .hero-title {
+  margin-bottom: 18px;
+}
+
+.deck-on .hero-phone,
+.deck-on .story-phone {
+  width: clamp(150px, 13vw, 175px);
+}
+
+.hero-screen .marquee-item {
+  width: clamp(72px, 6.5vw, 88px);
+}
+
+/* o texto da Minha Apresentação já está no cabeçalho da faixa contínua */
+.deck-on .carousel--panorama .panorama-text {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .deck-on .hero-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .deck-on .hero-buttons .btn {
+    width: auto;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+  }
+
+  .deck-on .hero-text,
+  .deck-on .section-subtitle {
+    font-size: 0.92rem;
+  }
+
+  .deck-on #sobre .avatar {
+    width: 120px;
+  }
+
+  .cf-rail--auto {
+    --cf-size: min(78vw, 300px);
+  }
+}
+
+.deck-on .carousel--strip .panorama-text {
+  display: block;
+}
+
+.deck-on .hero-screen {
+  padding-top: clamp(22px, 2.6vw, 32px);
+}
+
+.deck-on .hero-screen .marquee {
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .deck-on .screen {
+    --peek: 26px;
+  }
+
+  .deck-on .hero-tag,
+  .deck-on .carousel--strip .panorama-text {
+    display: none;
+  }
+
+  .deck-on #sobre .about-content p {
+    font-size: 0.92rem;
   }
 }

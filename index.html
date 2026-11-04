@@ -34,8 +34,8 @@
   </script>
 
   <!-- ?v= muda a cada atualização para o navegador não usar a versão antiga guardada -->
-  <link rel="stylesheet" href="styles/style.css?v=20261104j">
-  <script src="scripts/app.js?v=20261104j" defer></script>
+  <link rel="stylesheet" href="styles/style.css?v=20261104k">
+  <script src="scripts/app.js?v=20261104k" defer></script>
 
   <script type="application/ld+json">
   {
@@ -87,9 +87,10 @@
 
   <main class="container">
 
-    <!-- Hero -->
-    <section class="section hero" aria-labelledby="hero-title">
-      <div class="hero-content tile">
+    <!-- Topo: texto, celular e faixa de posts num quadrado só -->
+    <section class="section screen tile hero-screen" id="inicio" aria-labelledby="hero-title">
+      <div class="hero">
+      <div class="hero-content">
         <span class="hero-tag">✨ Design de Social Media</span>
         <h1 id="hero-title" class="hero-title">
           <span class="line"><span>Ideias criativas</span></span>
@@ -106,7 +107,7 @@
         </div>
       </div>
 
-      <div class="hero-visual tile" aria-hidden="true">
+      <div class="hero-visual" aria-hidden="true">
         <div class="phone hero-phone">
           <div class="phone-screen">
             <div class="phone-header">
@@ -137,25 +138,26 @@
         <span class="hero-chip chip-1">📚 Carrosséis</span>
         <span class="hero-chip chip-2">📱 Posts &amp; Stories</span>
       </div>
+      </div>
+
+      <!-- Faixa com os posts passando (montada pelo JS a partir dos carrosséis) -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track"></div>
+      </div>
     </section>
 
-    <!-- Faixa com os posts passando (montada pelo JS a partir dos carrosséis) -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track"></div>
-    </div>
-
     <!-- Sobre -->
-    <section class="section" id="sobre" aria-labelledby="sobre-title">
-      <div class="section-header tile">
+    <section class="section screen tile" id="sobre" aria-labelledby="sobre-title">
+      <div class="section-header">
         <h2 class="section-title" id="sobre-title">Oi, eu sou a Camilla!</h2>
       </div>
 
       <div class="about">
-        <div class="about-photo tile">
+        <div class="about-photo">
           <img src="assets/avatar-real.jpg" alt="Foto de Camilla Paschoal sorrindo" class="avatar" width="640" height="640" loading="lazy" decoding="async">
         </div>
 
-        <div class="about-content tile">
+        <div class="about-content">
           <p>Sou designer de Social Media e gosto de transformar ideias em conteúdos visuais que fazem sentido, despertam interesse e comunicam de verdade.</p>
           <p>Meu trabalho envolve criatividade, organização e atenção aos detalhes. Desenvolvo materiais para redes sociais buscando equilibrar estética e informação, sempre respeitando a identidade e os objetivos de cada projeto.</p>
           <p>Acredito que toda marca tem uma história para contar e que o design pode ajudar essa história a chegar mais longe.</p>
@@ -164,15 +166,15 @@
       </div>
 
       <div class="stats">
-        <div class="stat tile" style="--i:0">
+        <div class="stat" style="--i:0">
           <span class="stat-number" data-count="projects">8</span>
           <span class="stat-label">projetos no portfólio</span>
         </div>
-        <div class="stat tile" style="--i:1">
+        <div class="stat" style="--i:1">
           <span class="stat-number" data-count="slides">84</span>
           <span class="stat-label">slides criados</span>
         </div>
-        <div class="stat tile" style="--i:2">
+        <div class="stat" style="--i:2">
           <span class="stat-number" data-count="6">6</span>
           <span class="stat-label">tipos de serviço</span>
         </div>
@@ -181,14 +183,14 @@
 
     <!-- Portfólio -->
     <section class="section" id="portfolio" aria-labelledby="portfolio-title">
-      <div class="section-header tile">
+      <div class="section-header tile screen">
         <h2 class="section-title" id="portfolio-title">Um pouco do que eu crio</h2>
         <p class="section-subtitle">Cada projeto tem uma proposta, uma identidade e uma maneira própria de comunicar. Explore alguns dos meus trabalhos e conheça diferentes possibilidades de transformar ideias em conteúdo visual.</p>
         <span class="section-hint">🔍 Toque em uma imagem para ampliar</span>
       </div>
 
       <!-- Destaque: carrossel panorâmico (os 6 slides formam uma imagem só) -->
-      <article class="carousel carousel--panorama coverflow coverflow--tall tile" aria-labelledby="apresentacao-title">
+      <article class="carousel carousel--panorama coverflow coverflow--tall tile screen" aria-labelledby="apresentacao-title">
         <div class="carousel-header">
           <div>
             <span class="carousel-badge">Destaque · Projeto autoral</span>
@@ -209,7 +211,20 @@
           <button type="button" class="slide"><img src="assets/carrosseis/0-apresentacao/5-thumb.webp" data-full="assets/carrosseis/0-apresentacao/5.webp" width="640" height="800" alt="Apresentação Camilla Paschoal: slide 5 de 6" loading="lazy" decoding="async"></button>
           <button type="button" class="slide"><img src="assets/carrosseis/0-apresentacao/6-thumb.webp" data-full="assets/carrosseis/0-apresentacao/6.webp" width="640" height="800" alt="Apresentação Camilla Paschoal: slide 6 de 6" loading="lazy" decoding="async"></button>
         </div>
-        <p class="panorama-label">Versão contínua: os 6 slides lado a lado formam uma imagem só</p>
+
+      </article>
+
+      <!-- Minha Apresentação: versão contínua (os 6 slides lado a lado) -->
+      <article class="carousel carousel--strip tile screen" aria-labelledby="apresentacao-strip-title">
+        <div class="carousel-header">
+          <div>
+            <span class="carousel-badge">Destaque · Versão contínua</span>
+            <h3 id="apresentacao-strip-title">Minha Apresentação</h3>
+            <p class="carousel-meta">Os 6 slides lado a lado formam uma imagem só</p>
+          </div>
+        </div>
+        <p class="panorama-text panorama-text--strip">Um carrossel pensado como uma peça contínua: a imagem atravessa os slides e só se completa quando você arrasta. Neon, textura de filme e tipografia forte, um estilo diferente do que faço para clientes.</p>
+        
         <div class="panorama-stage">
           <div class="rail rail--panorama">
           <button type="button" class="slide"><img src="assets/carrosseis/0-apresentacao/1-thumb.webp" data-full="assets/carrosseis/0-apresentacao/1.webp" width="640" height="800" alt="Apresentação Camilla Paschoal: slide 1 de 6" loading="lazy" decoding="async"></button>
@@ -223,7 +238,7 @@
         <p class="panorama-swipe" aria-hidden="true">Arrasta pro lado <span>&gt;&gt;&gt;</span></p>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Nem Todo Comportamento</h3>
@@ -249,7 +264,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Quem é Vanessa Chaves</h3>
@@ -276,7 +291,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Calma em Casa</h3>
@@ -302,7 +317,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Não Gritar</h3>
@@ -329,7 +344,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Autismo e Comunicação</h3>
@@ -356,7 +371,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Ser mãe atípica é…</h3>
@@ -380,7 +395,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>E quem cuida da mãe?</h3>
@@ -406,7 +421,7 @@
         </div>
       </article>
 
-      <article class="carousel coverflow tile">
+      <article class="carousel coverflow tile screen">
         <div class="carousel-header">
           <div>
             <h3>Conhecendo Nosso Espaço</h3>
@@ -429,39 +444,39 @@
     </section>
 
     <!-- Serviços -->
-    <section class="section" id="servicos" aria-labelledby="servicos-title">
-      <div class="section-header tile">
+    <section class="section screen tile" id="servicos" aria-labelledby="servicos-title">
+      <div class="section-header">
         <h2 class="section-title" id="servicos-title">Como posso ajudar sua marca?</h2>
         <p class="section-subtitle">Do planejamento visual à criação das peças, desenvolvo conteúdos para deixar sua comunicação mais organizada, atrativa e alinhada à identidade da sua marca.</p>
       </div>
 
-      <div class="services-grid" data-stagger>
-        <article class="service-card tile">
+      <div class="services-grid cf-group" data-cf-word="Serviços">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">📱</div>
           <h3>Posts para redes sociais</h3>
           <p>Artes personalizadas para divulgar produtos, serviços, novidades e campanhas que capturam atenção.</p>
         </article>
-        <article class="service-card tile">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">📚</div>
           <h3>Carrosséis criativos</h3>
           <p>Conteúdos em sequência que organizam informações, contam histórias e despertam a curiosidade do público.</p>
         </article>
-        <article class="service-card tile">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">✨</div>
           <h3>Stories</h3>
           <p>Peças visuais para compartilhar novidades, divulgar serviços e criar oportunidades de interação com seus seguidores.</p>
         </article>
-        <article class="service-card tile">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">🎨</div>
           <h3>Identidade visual para redes</h3>
           <p>Organização de cores, tipografia e elementos gráficos para construir uma presença visual consistente e memorável.</p>
         </article>
-        <article class="service-card tile">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">🚀</div>
           <h3>Materiais promocionais</h3>
           <p>Criação de artes para lançamentos, datas especiais, eventos e ações comerciais que geram resultado.</p>
         </article>
-        <article class="service-card tile">
+        <article class="service-card">
           <div class="service-icon" aria-hidden="true">📦</div>
           <h3>Pacotes de conteúdo</h3>
           <p>Combinações de peças gráficas para manter a comunicação da marca ativa, organizada e consistente o mês todo.</p>
@@ -470,14 +485,14 @@
     </section>
 
     <!-- Diferenciais -->
-    <section class="section" id="diferenciais" aria-labelledby="diferenciais-title">
-      <div class="section-header tile">
+    <section class="section screen tile" id="diferenciais" aria-labelledby="diferenciais-title">
+      <div class="section-header">
         <h2 class="section-title" id="diferenciais-title">Mais do que criar artes</h2>
         <p class="section-subtitle">Quero ajudar sua ideia a ganhar vida.</p>
       </div>
 
       <div class="story">
-        <div class="story-steps">
+        <div class="story-steps cf-group">
           <div class="story-step is-active" data-step="0">
             <article class="feature">
               <span class="feature-icon" aria-hidden="true">01</span>
@@ -544,7 +559,7 @@
     </section>
 
     <!-- Contato -->
-    <section class="section contact tile" id="contato" aria-labelledby="contato-title">
+    <section class="section contact tile screen" id="contato" aria-labelledby="contato-title">
       <h2 id="contato-title">Tem uma ideia? Vamos conversar!</h2>
       <p>Se você tem um negócio, trabalha por conta própria ou cria conteúdo e precisa de uma comunicação visual mais interessante, posso ajudar!</p>
       <p>Me conte um pouco sobre seu projeto. Vai ser um prazer conhecer sua ideia e pensar em possibilidades para transformá-la em conteúdo.</p>
@@ -564,13 +579,11 @@
           Instagram
         </a>
       </div>
+      <p class="contact-footer">© <span id="year">2026</span> Camilla Paschoal · Design de Social Media</p>
     </section>
 
   </main>
 
-  <footer class="footer">
-    <div class="container">© <span id="year">2026</span> Camilla Paschoal · Design de Social Media</div>
-  </footer>
 
   <a href="https://wa.me/5521982566564" target="_blank" rel="noopener noreferrer" class="floating-cta" aria-label="Enviar mensagem no WhatsApp">
     <img src="assets/mensagem.png" alt="" width="28" height="28">

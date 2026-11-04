@@ -9,15 +9,15 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNavbar();
-  initActiveSection();
   initStagger();
-  initTiles();
+  splitTitles();
   initCarousels();
+  initGroups();
   const openLightbox = initLightbox();
   initMarquee(openLightbox);
   initHeroPhone();
   initCounters();
-  initStory();
+  initDeck();
   document.getElementById('year').textContent = new Date().getFullYear();
 });
 
@@ -102,41 +102,6 @@ function initNavbar() {
   update();
 }
 
-/* ── Destaca no menu a seção visível ──────────────────────────── */
-
-function initActiveSection() {
-  const sections = [...document.querySelectorAll('main section[id]')];
-  const links = new Map(
-    [...document.querySelectorAll('.nav-link')].map((link) => [link.getAttribute('href').slice(1), link])
-  );
-
-  // A seção ativa é a última cujo topo já passou de 40% da tela. No topo da página nenhuma fica marcada.
-  let ticking = false;
-  const update = () => {
-    const line = window.innerHeight * 0.4;
-    let current = null;
-    sections.forEach((section) => {
-      if (section.getBoundingClientRect().top <= line) current = section.id;
-    });
-    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-    if (atBottom) current = sections[sections.length - 1].id;
-    links.forEach((link, id) => link.classList.toggle('is-active', id === current));
-    ticking = false;
-  };
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-  }, { passive: true });
-  window.addEventListener('resize', update);
-  // o navegador pode restaurar a posição da rolagem depois de carregar a página
-  window.addEventListener('load', update);
-  window.addEventListener('pageshow', update);
-  update();
-}
-
 /* ── Animações de entrada ─────────────────────────────────────── */
 
 function initStagger() {
@@ -158,42 +123,6 @@ function splitTitles() {
     }).join(' ');
     title.classList.add('is-split');
   });
-}
-
-function initTiles() {
-  splitTitles();
-  const tiles = [...document.querySelectorAll('.tile')];
-
-  // atraso em cascata entre quadrados vizinhos do mesmo grupo
-  const groups = new Map();
-  tiles.forEach((tile) => {
-    const list = groups.get(tile.parentElement) || [];
-    list.push(tile);
-    groups.set(tile.parentElement, list);
-  });
-  groups.forEach((list) => list.forEach((tile, i) => tile.style.setProperty('--i', Math.min(i, 5))));
-
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    tiles.forEach((tile) => tile.classList.add('is-in'));
-    return;
-  }
-
-  let responded = false;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      responded = true;
-      // entra quando aparece, some quando sai da tela e volta ao rolar de volta
-      entries.forEach((entry) => entry.target.classList.toggle('is-in', entry.isIntersecting));
-    },
-    { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
-  );
-
-  tiles.forEach((tile) => observer.observe(tile));
-
-  // Segurança: se o navegador não responder, mostra tudo em vez de deixar o conteúdo invisível
-  setTimeout(() => {
-    if (!responded) tiles.forEach((tile) => tile.classList.add('is-in'));
-  }, 3000);
 }
 
 /* ── Carrosséis ───────────────────────────────────────────────── */
@@ -229,33 +158,102 @@ function initCarousels() {
   });
 }
 
-/* ── Slides como garrafas: o do meio grande, os vizinhos menores ── */
+/* ── Estilo garrafas: o item do meio grande, os vizinhos menores e juntinhos ── */
 
 function initCoverflow(carousel) {
   // a faixa contínua da Minha Apresentação (rail--panorama) fica de fora, embaixo
   const rail = carousel.querySelector('.rail:not(.rail--panorama)');
+  makeCoverflow({
+    rail,
+    items: [...rail.querySelectorAll('.slide')],
+    prev: carousel.querySelector('[data-dir="prev"]'),
+    next: carousel.querySelector('[data-dir="next"]'),
+    word: carousel.querySelector('h3').textContent,
+  });
+}
+
+// Serviços e diferenciais: os cards soltos viram um carrossel dentro de um quadrado só
+function initGroups() {
+  const services = document.querySelector('.services-grid.cf-group');
+  if (services) {
+    makeCoverflow({
+      rail: services,
+      items: [...services.children],
+      word: services.dataset.cfWord,
+      autoHeight: true,
+      clickCenter: false,
+      // começa pelo do meio, com vizinhos dos dois lados, como as garrafas
+      start: Math.floor((services.children.length - 1) / 2),
+    });
+  }
+
+  const steps = document.querySelector('.story-steps.cf-group');
+  if (steps) {
+    // carrossel e contador ficam juntos numa coluna, o celular na outra
+    const column = document.createElement('div');
+    column.className = 'story-cf';
+    steps.before(column);
+    column.append(steps);
+    const images = document.querySelectorAll('.story-phone .phone-media img');
+    const like = document.querySelector('.story-phone .phone-like');
+    makeCoverflow({
+      rail: steps,
+      items: [...steps.querySelectorAll('.story-step')],
+      autoHeight: true,
+      clickCenter: false,
+      onChange: (index, item) => {
+        // o celular ao lado mostra o post do diferencial que está no meio
+        document.querySelectorAll('.story-step').forEach((s) => s.classList.toggle('is-active', s === item));
+        images.forEach((img) => img.classList.toggle('is-active', img.dataset.step === item.dataset.step));
+        like.classList.remove('is-liked');
+        void like.offsetWidth; // reinicia a animação do coração
+        like.classList.add('is-liked');
+      },
+    });
+  }
+}
+
+function makeButton(dir) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'carousel-btn';
+  button.dataset.dir = dir;
+  button.setAttribute('aria-label', dir === 'prev' ? 'Anterior' : 'Próximo');
+  button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${dir === 'prev' ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6'}"/></svg>`;
+  return button;
+}
+
+function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clickCenter = true, onChange, start = 0 }) {
+  if (!rail || !items.length) return;
   rail.classList.add('cf-rail');
-  const slides = [...rail.querySelectorAll('.slide')];
-  const prev = carousel.querySelector('[data-dir="prev"]');
-  const next = carousel.querySelector('[data-dir="next"]');
-  if (!slides.length) return;
+  if (autoHeight) rail.classList.add('cf-rail--auto');
+  items.forEach((item) => item.classList.add('cf-item'));
 
-  // nome do carrossel grande e apagado no fundo
-  const word = document.createElement('span');
-  word.className = 'cf-word';
-  word.setAttribute('aria-hidden', 'true');
-  word.textContent = carousel.querySelector('h3').textContent;
-  rail.prepend(word);
+  // nome grande e apagado no fundo, como o "exclusive" do vídeo
+  if (word) {
+    const bg = document.createElement('span');
+    bg.className = 'cf-word';
+    bg.setAttribute('aria-hidden', 'true');
+    bg.textContent = word;
+    rail.prepend(bg);
+  }
 
-  // contador e barrinha de progresso embaixo
+  // contador e barrinha de progresso embaixo (com setas próprias quando o grupo não tem)
   const footer = document.createElement('div');
   footer.className = 'cf-footer';
   footer.innerHTML = '<span class="cf-count"></span><span class="cf-bar"><span></span></span><span class="cf-hint">arraste ou use as setas</span>';
   rail.after(footer);
+  if (!prev) {
+    prev = makeButton('prev');
+    next = makeButton('next');
+    footer.prepend(prev);
+    footer.append(next);
+    footer.classList.add('cf-footer--buttons');
+  }
   const count = footer.querySelector('.cf-count');
   const bar = footer.querySelector('.cf-bar');
 
-  // distância (em larguras de slide) e tamanho de cada posição a partir do meio
+  // distância (em larguras do item) e tamanho de cada posição a partir do meio
   const OFFSET = [0, 0.56, 0.98, 1.3];
   const SCALE = [1, 0.74, 0.56, 0.44];
   const OPACITY = [1, 0.92, 0.6, 0];
@@ -264,70 +262,71 @@ function initCoverflow(carousel) {
   let current = 0;
 
   const render = () => {
-    const size = slides[0].offsetWidth;
-    slides.forEach((slide, i) => {
+    const size = items[0].offsetWidth;
+    if (autoHeight) {
+      const tallest = Math.max(...items.map((item) => item.offsetHeight));
+      rail.style.height = `${tallest + 16}px`;
+    }
+    items.forEach((item, i) => {
       const d = i - current;
       const ad = Math.min(Math.abs(d), 3);
       const x = Math.sign(d) * OFFSET[ad] * size;
-      slide.style.transform = `translateX(${x.toFixed(1)}px) scale(${SCALE[ad]})`;
-      slide.style.opacity = OPACITY[ad];
-      slide.style.filter = ad ? `brightness(${BRIGHT[ad]})` : 'none';
-      slide.style.zIndex = 10 - ad;
-      slide.style.visibility = Math.abs(d) > 3 ? 'hidden' : 'visible';
-      slide.classList.toggle('is-center', d === 0);
-      slide.tabIndex = d === 0 ? 0 : -1;
-      slide.setAttribute('aria-hidden', String(d !== 0));
+      item.style.transform = `translateX(${x.toFixed(1)}px) scale(${SCALE[ad]})`;
+      item.style.opacity = OPACITY[ad];
+      item.style.filter = ad ? `brightness(${BRIGHT[ad]})` : 'none';
+      item.style.zIndex = 10 - ad;
+      item.style.visibility = Math.abs(d) > 3 ? 'hidden' : 'visible';
+      item.classList.toggle('is-center', d === 0);
+      if (item.matches('button')) item.tabIndex = d === 0 ? 0 : -1;
+      item.setAttribute('aria-hidden', String(d !== 0));
     });
-    count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-    bar.style.setProperty('--cf-progress', `${((current + 1) / slides.length) * 100}%`);
+    count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
+    bar.style.setProperty('--cf-progress', `${((current + 1) / items.length) * 100}%`);
     prev.disabled = current === 0;
-    next.disabled = current === slides.length - 1;
+    next.disabled = current === items.length - 1;
   };
 
   const go = (index) => {
-    current = Math.max(0, Math.min(slides.length - 1, index));
+    current = Math.max(0, Math.min(items.length - 1, index));
     render();
+    if (onChange) onChange(current, items[current]);
   };
 
   prev.addEventListener('click', () => go(current - 1));
   next.addEventListener('click', () => go(current + 1));
 
   // Clicar num vizinho traz ele para o meio (sem abrir a imagem); o do meio abre em tela cheia
-  slides.forEach((slide, i) => {
-    slide.addEventListener('click', (event) => {
-      if (dragged) {
-        event.stopImmediatePropagation();
-        return;
-      }
-      if (i !== current) {
-        event.stopImmediatePropagation();
-        go(i);
-      }
+  items.forEach((item, i) => {
+    item.addEventListener('click', (event) => {
+      if (dragged || i !== current || !clickCenter) event.stopImmediatePropagation();
+      if (!dragged && i !== current) go(i);
     });
   });
 
   rail.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') { event.preventDefault(); go(current - 1); slides[current].focus(); }
-    if (event.key === 'ArrowRight') { event.preventDefault(); go(current + 1); slides[current].focus(); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); go(current - 1); items[current].focus?.(); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); go(current + 1); items[current].focus?.(); }
   });
 
-  // Arrastar com o mouse ou o dedo
+  // Arrastar para o lado com o mouse ou o dedo
   let startX = null;
+  let startY = null;
   let dragged = false;
   rail.addEventListener('pointerdown', (event) => {
     if (event.button !== 0) return;
     startX = event.clientX;
+    startY = event.clientY;
     dragged = false;
   });
   rail.addEventListener('pointermove', (event) => {
     if (startX === null) return;
     const delta = event.clientX - startX;
-    if (Math.abs(delta) > 8) {
+    if (Math.abs(delta) > 8 && Math.abs(delta) > Math.abs(event.clientY - startY)) {
       dragged = true;
       rail.classList.add('is-dragging');
     }
-    // cada meio slide arrastado passa um slide
-    if (Math.abs(delta) > slides[0].offsetWidth * 0.45) {
+    // cada meio item arrastado passa um
+    if (dragged && Math.abs(delta) > items[0].offsetWidth * 0.45) {
       go(current + (delta < 0 ? 1 : -1));
       startX = event.clientX;
     }
@@ -343,7 +342,8 @@ function initCoverflow(carousel) {
   rail.addEventListener('pointerleave', () => { if (startX !== null) end(); });
 
   window.addEventListener('resize', render);
-  render();
+  window.addEventListener('load', render);
+  go(start);
 }
 
 /* ── Faixa com os posts dos carrosséis passando ───────────────── */
@@ -353,7 +353,7 @@ function initMarquee(openLightbox) {
   if (!track) return;
 
   // Intercala os carrosséis (capa de cada um, depois o 1º slide de cada…) para variar o que aparece
-  const carousels = [...document.querySelectorAll('.carousel')].map((c) => [...c.querySelectorAll('.rail:not(.rail--panorama) .slide')]);
+  const carousels = [...document.querySelectorAll('.carousel:not(.carousel--strip)')].map((c) => [...c.querySelectorAll('.rail:not(.rail--panorama) .slide')]);
   const longest = Math.max(...carousels.map((slides) => slides.length));
   const order = [];
   for (let i = 0; i < longest; i++) {
@@ -461,7 +461,7 @@ function initHeroPhone() {
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   const totals = {
-    projects: document.querySelectorAll('.carousel').length,
+    projects: document.querySelectorAll('.carousel:not(.carousel--strip)').length,
     slides: document.querySelectorAll('.carousel .rail:not(.rail--panorama) .slide').length,
   };
 
@@ -485,50 +485,13 @@ function initCounters() {
     requestAnimationFrame(tick);
   };
 
-  let responded = false;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      responded = true;
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        observer.unobserve(entry.target);
-        animate(entry.target);
-      });
-    },
-    { threshold: 0.6 }
-  );
-
-  counters.forEach((el) => observer.observe(el));
-
-  setTimeout(() => {
-    if (!responded) counters.forEach((el) => { el.textContent = el.dataset.count; });
-  }, 3000);
-}
-
-/* ── Diferenciais: o celular troca de imagem conforme o texto ─── */
-
-function initStory() {
-  const steps = document.querySelectorAll('.story-step');
-  const images = document.querySelectorAll('.story-phone .phone-media img');
-  const like = document.querySelector('.story-phone .phone-like');
-  if (!steps.length) return;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const step = entry.target.dataset.step;
-        steps.forEach((s) => s.classList.toggle('is-active', s === entry.target));
-        images.forEach((img) => img.classList.toggle('is-active', img.dataset.step === step));
-        like.classList.remove('is-liked');
-        void like.offsetWidth; // reinicia a animação do coração
-        like.classList.add('is-liked');
-      });
-    },
-    { rootMargin: '-45% 0px -45% 0px' }
-  );
-
-  steps.forEach((step) => observer.observe(step));
+  // conta quando a tela do Sobre aparece
+  let done = false;
+  document.addEventListener('screenchange', (event) => {
+    if (done || !event.detail.screen.contains(counters[0])) return;
+    done = true;
+    counters.forEach(animate);
+  });
 }
 
 /* ── Lightbox: abre as imagens dos carrosséis em tela cheia ───── */
@@ -625,4 +588,173 @@ function initLightbox() {
   });
 
   return open;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Sem rolagem: telas que trocam com a transição das garrafas na vertical.
+   A tela atual fica grande no meio; a anterior e a próxima aparecem
+   menores e apagadas, espiando em cima e embaixo.
+   ══════════════════════════════════════════════════════════════ */
+
+function initDeck() {
+  const screens = [...document.querySelectorAll('.screen')];
+  if (screens.length < 2) return;
+
+  const root = document.documentElement;
+  const navbar = document.querySelector('.navbar');
+  const lightbox = document.getElementById('lightbox');
+  const links = [...document.querySelectorAll('a[href^="#"]')];
+  root.classList.add('deck-on');
+
+  const SCALE = [1, 0.82, 0.68];
+  const OPACITY = [1, 0.55, 0];
+  const BRIGHT = [1, 0.7, 0.5];
+  const DURATION = reduceMotion ? 0 : 850;
+
+  let current = 0;
+  let locked = false;
+
+  const sectionId = (screen) => screen.closest('section[id]')?.id || screen.id;
+
+  const render = () => {
+    const vh = window.innerHeight;
+    const gap = window.innerWidth <= 600 ? 14 : 22;
+    const curHeight = screens[current].offsetHeight;
+
+    screens.forEach((screen, i) => {
+      const d = i - current;
+      const ad = Math.min(Math.abs(d), 2);
+      let y = 0;
+      if (ad === 1) {
+        // encosta logo depois da tela atual, deixando só a ponta à mostra
+        y = Math.sign(d) * (curHeight / 2 + gap + (screen.offsetHeight * SCALE[1]) / 2);
+      } else if (ad === 2) {
+        y = Math.sign(d) * vh;
+      }
+      screen.style.transform = `translate(-50%, -50%) translateY(${y.toFixed(1)}px) scale(${SCALE[ad]})`;
+      screen.style.opacity = OPACITY[ad];
+      screen.style.filter = ad ? `brightness(${BRIGHT[ad]})` : 'none';
+      screen.style.zIndex = 10 - ad;
+      screen.style.visibility = Math.abs(d) > 2 ? 'hidden' : 'visible';
+      screen.classList.toggle('is-current', d === 0);
+      screen.classList.toggle('is-near', ad === 1);
+      // só a tela atual recebe foco e cliques
+      screen.inert = d !== 0;
+    });
+
+    const id = sectionId(screens[current]);
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      link.classList.toggle('is-active', current > 0 && link.getAttribute('href') === `#${id}`);
+    });
+    navbar.classList.toggle('is-scrolled', current > 0);
+    navbar.style.setProperty('--progress', (current / (screens.length - 1)).toFixed(4));
+  };
+
+  const go = (index, { updateHash = true } = {}) => {
+    const target = Math.max(0, Math.min(screens.length - 1, index));
+    if (target === current && screens[current].classList.contains('is-current')) return;
+    current = target;
+    locked = true;
+    render();
+    screens[current].scrollTop = 0;
+    setTimeout(() => { locked = false; }, DURATION);
+    if (updateHash) {
+      const id = sectionId(screens[current]);
+      history.replaceState(null, '', id && current > 0 ? `#${id}` : location.pathname + location.search);
+    }
+    document.dispatchEvent(new CustomEvent('screenchange', { detail: { index: current, screen: screens[current] } }));
+  };
+
+  const busy = () => locked || lightbox.classList.contains('is-open');
+
+  // A tela pode ter conteúdo maior que o quadrado (celular): primeiro rola dentro dela,
+  // e só troca de tela quando chegar ao fim (ou ao começo).
+  const canScroll = (dir) => {
+    const el = screens[current];
+    if (el.scrollHeight <= el.clientHeight + 2) return false;
+    return dir > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 2 : el.scrollTop > 2;
+  };
+
+  // Rodinha do mouse / touchpad
+  let wheelSum = 0;
+  let wheelTimer;
+  window.addEventListener('wheel', (event) => {
+    if (lightbox.classList.contains('is-open')) return;
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return; // arraste lateral dos carrosséis
+    const dir = Math.sign(event.deltaY);
+    if (canScroll(dir) && screens[current].contains(event.target)) return;
+    event.preventDefault();
+    if (busy()) return;
+    wheelSum += event.deltaY;
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(() => { wheelSum = 0; }, 200);
+    if (Math.abs(wheelSum) > 40) {
+      wheelSum = 0;
+      go(current + dir);
+    }
+  }, { passive: false });
+
+  // Deslizar o dedo para cima ou para baixo
+  let touch = null;
+  window.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1) return;
+    touch = {
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY,
+      down: !canScroll(1),
+      up: !canScroll(-1),
+    };
+  }, { passive: true });
+  window.addEventListener('touchend', (event) => {
+    if (!touch || busy()) { touch = null; return; }
+    const dx = event.changedTouches[0].clientX - touch.x;
+    const dy = event.changedTouches[0].clientY - touch.y;
+    if (Math.abs(dy) > 60 && Math.abs(dy) > Math.abs(dx) * 1.2) {
+      if (dy < 0 && touch.down) go(current + 1);
+      if (dy > 0 && touch.up) go(current - 1);
+    }
+    touch = null;
+  }, { passive: true });
+
+  // Teclado
+  document.addEventListener('keydown', (event) => {
+    if (busy() || event.target.closest('input, textarea, select')) return;
+    const next = ['ArrowDown', 'PageDown', ' '].includes(event.key);
+    const prev = ['ArrowUp', 'PageUp'].includes(event.key);
+    if (event.key === 'Home') { event.preventDefault(); go(0); }
+    if (event.key === 'End') { event.preventDefault(); go(screens.length - 1); }
+    if (!next && !prev) return;
+    const dir = next ? 1 : -1;
+    if (canScroll(dir)) return;
+    event.preventDefault();
+    go(current + dir);
+  });
+
+  // Menu e botões que apontam para uma seção
+  const indexFor = (id) => {
+    const target = document.getElementById(id);
+    if (!target) return -1;
+    return screens.findIndex((screen) => screen === target || target.contains(screen) || screen.contains(target));
+  };
+  links.forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    link.addEventListener('click', (event) => {
+      const index = id ? indexFor(id) : 0;
+      if (index < 0) return;
+      event.preventDefault();
+      go(index);
+    });
+  });
+
+  let frame = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(render);
+  });
+  window.addEventListener('load', render);
+
+  // Abre direto na seção do link (ex.: .../#contato); sem link, começa no topo
+  const start = location.hash ? indexFor(location.hash.slice(1)) : 0;
+  current = -1;
+  go(start > 0 ? start : 0, { updateHash: false });
 }
