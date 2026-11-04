@@ -126,12 +126,44 @@ function initStack() {
     });
     main.classList.add('stack');
 
-    sections.forEach((section) => {
-      // Curta: para abaixo do menu. Alta: para quando o rodapé dela chega ao fim da tela.
-      const top = Math.min(navOffset, viewport - section.offsetHeight - 16);
+    // Cada carta para um pouco mais abaixo da anterior, para a borda das de baixo continuar aparecendo
+    const peek = window.innerWidth <= 600 ? 10 : 16;
+    sections.forEach((section, i) => {
+      // Curta: para abaixo do menu (e das bordas das anteriores). Alta: para quando o rodapé dela chega ao fim da tela.
+      const top = Math.min(navOffset + i * peek, viewport - section.offsetHeight - 16);
+      stickTop.set(section, top);
       section.style.setProperty('--stack-top', `${Math.round(top)}px`);
+      // encolhe a partir do meio do pedaço que fica visível (em cartas altas, o topo está fora da tela)
+      const visibleTop = Math.max(top, 0);
+      const visibleBottom = Math.min(top + section.offsetHeight, viewport);
+      section.style.setProperty('--cover-origin', `${Math.round((visibleTop + visibleBottom) / 2 - top)}px`);
+    });
+    updateCover();
+  };
+
+  // Quando a próxima carta sobe por cima, o conteúdo da de baixo some aos poucos e a carta encolhe
+  // um pouco. Ao rolar de volta, ele reaparece. A carta em si nunca sai da tela.
+  const stickTop = new Map();
+  const updateCover = () => {
+    const viewport = window.innerHeight;
+    sections.forEach((section, i) => {
+      const next = sections[i + 1];
+      let cover = 0;
+      if (next && !reduceMotion) {
+        const distance = next.getBoundingClientRect().top - (stickTop.get(next) || 0);
+        cover = Math.min(Math.max(1 - distance / (viewport * 0.6), 0), 1);
+      }
+      section.style.setProperty('--cover', cover.toFixed(3));
     });
   };
+
+  let coverTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!coverTicking) {
+      coverTicking = true;
+      requestAnimationFrame(() => { updateCover(); coverTicking = false; });
+    }
+  }, { passive: true });
 
   let frame = 0;
   const schedule = () => {

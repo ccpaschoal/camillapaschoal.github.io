@@ -458,6 +458,19 @@ main {
   /* várias camadas com desfoque umas sobre as outras pesam no celular */
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  /* --cover vai de 0 (livre) a 1 (coberta pela próxima): a carta encolhe um pouco */
+  scale: calc(1 - var(--cover, 0) * 0.05);
+  transform-origin: 50% var(--cover-origin, 0px);
+}
+
+/* O conteúdo da carta coberta some aos poucos e volta ao rolar para cima */
+.stack > .section > * {
+  opacity: calc(1 - var(--cover, 0) * 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack > .section { scale: none; }
+  .stack > .section > * { opacity: 1; }
 }
 
 .section-header {
