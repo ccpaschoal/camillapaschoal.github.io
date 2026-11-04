@@ -121,7 +121,16 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-height) + 16px);
+  /* Ao soltar a rolagem, a página "pula" para o início da seção/carrossel mais próximo.
+     "proximity" (e não "mandatory") para não prender seções mais altas que a tela no celular. */
+  scroll-snap-type: y proximity;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Pontos de parada da rolagem: cada seção e cada carrossel do portfólio */
+.section,
+.carousel {
+  scroll-snap-align: start;
 }
 
 body {
@@ -1505,13 +1514,13 @@ body.no-scroll {
 
 .js .reveal.is-visible {
   opacity: 1;
-  animation: reveal-up 0.8s var(--ease) backwards;
-  animation-delay: calc(var(--i, 0) * 90ms);
+  animation: reveal-up 0.4s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 50ms);
 }
 
 .js .reveal .section-title::after {
   width: 0;
-  transition: width 0.9s var(--ease) 0.3s;
+  transition: width 0.5s var(--ease) 0.1s;
 }
 
 .js .reveal.is-visible .section-title::after {
@@ -1524,8 +1533,8 @@ body.no-scroll {
 
 .js .carousel.is-visible .slide {
   opacity: 1;
-  animation: reveal-right 0.7s var(--ease) backwards;
-  animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+  animation: reveal-right 0.35s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 40ms + 50ms);
 }
 
 /* ── Keyframes ────────────────────────────────────────────────── */
