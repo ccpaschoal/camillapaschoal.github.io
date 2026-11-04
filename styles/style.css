@@ -121,16 +121,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-height) + 16px);
-  /* Ao soltar a rolagem, a página "pula" para o início da seção/carrossel mais próximo.
-     "proximity" (e não "mandatory") para não prender seções mais altas que a tela no celular. */
-  scroll-snap-type: y proximity;
   -webkit-text-size-adjust: 100%;
-}
-
-/* Pontos de parada da rolagem: cada seção e cada carrossel do portfólio */
-.section,
-.carousel {
-  scroll-snap-align: start;
 }
 
 body {
@@ -454,6 +445,19 @@ main {
   box-shadow: var(--shadow-md);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+}
+
+/* Cartas empilhadas: cada seção para no lugar e a seguinte sobe por cima dela.
+   O app.js calcula --stack-top: seções curtas param logo abaixo do menu; seções mais
+   altas que a tela só param quando o fim delas aparece, para nada ficar escondido. */
+.stack > .section {
+  position: sticky;
+  top: var(--stack-top, 0px);
+  background: var(--surface-strong);
+  box-shadow: 0 -10px 40px rgba(15, 42, 64, 0.16), var(--shadow-md);
+  /* várias camadas com desfoque umas sobre as outras pesam no celular */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .section-header {

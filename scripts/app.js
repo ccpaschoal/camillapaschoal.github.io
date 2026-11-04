@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroPhone();
   initCounters();
   initStory();
+  initStack();
   document.getElementById('year').textContent = new Date().getFullYear();
 });
 
@@ -100,6 +101,65 @@ function initNavbar() {
     }
   }, { passive: true });
   update();
+}
+
+/* ── Seções empilhadas (a próxima sobe por cima da anterior) ───── */
+
+function initStack() {
+  const main = document.querySelector('main');
+  const sections = [...main.querySelectorAll(':scope > .section')];
+  if (sections.length < 2 || !CSS.supports('position', 'sticky')) return;
+
+  sections.forEach((section, i) => { section.style.zIndex = i + 1; });
+  main.classList.add('stack');
+
+  // Posição de cada seção como se não estivesse empilhada (usada pelos links do menu)
+  const naturalTop = new Map();
+
+  const layout = () => {
+    const navOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    const viewport = window.innerHeight;
+
+    main.classList.remove('stack');
+    sections.forEach((section) => {
+      naturalTop.set(section, section.getBoundingClientRect().top + window.scrollY);
+    });
+    main.classList.add('stack');
+
+    sections.forEach((section) => {
+      // Curta: para abaixo do menu. Alta: para quando o rodapé dela chega ao fim da tela.
+      const top = Math.min(navOffset, viewport - section.offsetHeight - 16);
+      section.style.setProperty('--stack-top', `${Math.round(top)}px`);
+    });
+  };
+
+  let frame = 0;
+  const schedule = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(layout);
+  };
+
+  layout();
+  window.addEventListener('resize', schedule);
+  window.addEventListener('load', schedule);
+  // Carrosséis e imagens podem mudar a altura das seções depois de carregar
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(schedule);
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  // Links do menu: uma seção parada no fundo parece "já estar na tela" para o navegador,
+  // então rolamos até a posição real dela.
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    if (!target || !sections.includes(target)) return;
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const navOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      window.scrollTo({ top: naturalTop.get(target) - navOffset, behavior: reduceMotion ? 'auto' : 'smooth' });
+      history.replaceState(null, '', `#${target.id}`);
+    });
+  });
 }
 
 /* ── Destaca no menu a seção visível ──────────────────────────── */
