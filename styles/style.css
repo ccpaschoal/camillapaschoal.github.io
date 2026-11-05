@@ -2407,3 +2407,4 @@ main:focus { outline: none; }
 .phone::before { border-radius: 999px !important; }
 .phone-header img { border-radius: 50% !important; }
 .btn:active { transform: none; box-shadow: none; }
+.avatar { border-radius: 50% !important; }
