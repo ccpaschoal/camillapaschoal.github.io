@@ -9,7 +9,6 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNavbar();
-  initStagger();
   splitTitles();
   initCarousels();
   initGroups();
@@ -104,23 +103,30 @@ function initNavbar() {
 
 /* ── Animações de entrada ─────────────────────────────────────── */
 
-function initStagger() {
-  document.querySelectorAll('[data-stagger]').forEach((group) => {
-    [...group.children].forEach((child, i) => child.style.setProperty('--i', i));
-  });
-}
-
-// Títulos que aparecem letra por letra (como o "Our Wine Collection" do vídeo)
+// Títulos que aparecem letra por letra. O texto inteiro fica num span invisível
+// para leitores de tela; as letras animadas ficam escondidas deles.
 function splitTitles() {
   document.querySelectorAll('.section-title, .contact h2').forEach((title) => {
     const text = title.textContent.trim();
-    title.setAttribute('aria-label', text);
     let n = 0;
-    title.innerHTML = text.split(' ').map((word) => {
-      const letters = [...word].map((ch) => `<span class="ch" style="--c:${n++}">${ch}</span>`).join('');
+    const words = text.split(' ').map((word) => {
+      const w = document.createElement('span');
+      w.className = 'word';
+      w.setAttribute('aria-hidden', 'true');
+      [...word].forEach((ch) => {
+        const c = document.createElement('span');
+        c.className = 'ch';
+        c.textContent = ch;
+        c.style.setProperty('--c', n++);
+        w.append(c);
+      });
       n++; // pausa curtinha entre as palavras
-      return `<span class="word" aria-hidden="true">${letters}</span>`;
-    }).join(' ');
+      return w;
+    });
+    const reader = document.createElement('span');
+    reader.className = 'sr-only';
+    reader.textContent = text;
+    title.replaceChildren(reader, ...words.flatMap((w, i) => (i ? [' ', w] : [w])));
     title.classList.add('is-split');
   });
 }
@@ -129,33 +135,6 @@ function splitTitles() {
 
 function initCarousels() {
   document.querySelectorAll('.coverflow').forEach(initCoverflow);
-
-  document.querySelectorAll('.carousel:not(.coverflow)').forEach((carousel) => {
-    if (!carousel.querySelector('[data-dir="prev"]')) return;
-    const rail = carousel.querySelector('.rail');
-    const prev = carousel.querySelector('[data-dir="prev"]');
-    const next = carousel.querySelector('[data-dir="next"]');
-
-    rail.querySelectorAll('.slide').forEach((slide, i) => slide.style.setProperty('--i', Math.min(i, 5)));
-
-    const step = () => {
-      const slide = rail.querySelector('.slide');
-      const gap = parseFloat(getComputedStyle(rail).columnGap) || 16;
-      return slide ? slide.offsetWidth + gap : rail.clientWidth;
-    };
-
-    const updateButtons = () => {
-      const max = rail.scrollWidth - rail.clientWidth - 2;
-      prev.disabled = rail.scrollLeft <= 2;
-      next.disabled = rail.scrollLeft >= max;
-    };
-
-    prev.addEventListener('click', () => rail.scrollBy({ left: -step() }));
-    next.addEventListener('click', () => rail.scrollBy({ left: step() }));
-    rail.addEventListener('scroll', updateButtons, { passive: true });
-    window.addEventListener('resize', updateButtons);
-    updateButtons();
-  });
 }
 
 /* ── Estilo garrafas: o item do meio grande, os vizinhos menores e juntinhos ── */
@@ -229,7 +208,7 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
   if (autoHeight) rail.classList.add('cf-rail--auto');
   items.forEach((item) => item.classList.add('cf-item'));
 
-  // nome grande e apagado no fundo, como o "exclusive" do vídeo
+  // nome do carrossel grande e apagado no fundo
   if (word) {
     const bg = document.createElement('span');
     bg.className = 'cf-word';
@@ -241,7 +220,7 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
   // contador e barrinha de progresso embaixo (com setas próprias quando o grupo não tem)
   const footer = document.createElement('div');
   footer.className = 'cf-footer';
-  footer.innerHTML = '<span class="cf-count"></span><span class="cf-bar"><span></span></span><span class="cf-hint">arraste ou use as setas</span>';
+  footer.innerHTML = '<span class="cf-count" aria-live="polite"></span><span class="cf-bar" aria-hidden="true"><span></span></span><span class="cf-hint">arraste ou use as setas</span>';
   rail.after(footer);
   if (!prev) {
     prev = makeButton('prev');
@@ -278,7 +257,6 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
       item.style.visibility = Math.abs(d) > 3 ? 'hidden' : 'visible';
       item.classList.toggle('is-center', d === 0);
       if (item.matches('button')) item.tabIndex = d === 0 ? 0 : -1;
-      item.setAttribute('aria-hidden', String(d !== 0));
     });
     count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
     bar.style.setProperty('--cf-progress', `${((current + 1) / items.length) * 100}%`);
@@ -638,8 +616,6 @@ function initDeck() {
       screen.style.visibility = Math.abs(d) > 2 ? 'hidden' : 'visible';
       screen.classList.toggle('is-current', d === 0);
       screen.classList.toggle('is-near', ad === 1);
-      // só a tela atual recebe foco e cliques
-      screen.inert = d !== 0;
     });
 
     const id = sectionId(screens[current]);
@@ -666,6 +642,22 @@ function initDeck() {
   };
 
   const busy = () => locked || lightbox.classList.contains('is-open');
+
+  // Clicar na tela vizinha que espia traz ela para o meio (sem acionar o que está dentro)
+  screens.forEach((screen, i) => screen.addEventListener('click', (event) => {
+    if (i === current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    go(i);
+  }, true));
+
+  // Navegando com Tab: ao focar algo de outra tela, ela vem para o meio,
+  // então todo o conteúdo continua acessível para teclado e leitores de tela
+  document.addEventListener('focusin', (event) => {
+    if (lightbox.contains(event.target)) return;
+    const i = screens.findIndex((screen) => screen.contains(event.target));
+    if (i >= 0 && i !== current) go(i);
+  });
 
   // A tela pode ter conteúdo maior que o quadrado (celular): primeiro rola dentro dela,
   // e só troca de tela quando chegar ao fim (ou ao começo).
@@ -719,6 +711,8 @@ function initDeck() {
   // Teclado
   document.addEventListener('keydown', (event) => {
     if (busy() || event.target.closest('input, textarea, select')) return;
+    // Espaço em link ou botão é para clicar, não para trocar de tela
+    if (event.key === ' ' && event.target.closest('a, button')) return;
     const next = ['ArrowDown', 'PageDown', ' '].includes(event.key);
     const prev = ['ArrowUp', 'PageUp'].includes(event.key);
     if (event.key === 'Home') { event.preventDefault(); go(0); }

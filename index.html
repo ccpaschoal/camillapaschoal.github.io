@@ -13,7 +13,10 @@
   <meta property="og:title" content="Camilla Paschoal · Designer de Social Media">
   <meta property="og:description" content="Transformo ideias em conteúdos visuais criativos para redes sociais.">
   <meta property="og:url" content="https://ccpaschoal.github.io/">
+  <link rel="canonical" href="https://ccpaschoal.github.io/">
   <meta property="og:image" content="https://ccpaschoal.github.io/assets/avatar-real.jpg">
+  <meta property="og:image:alt" content="Foto de Camilla Paschoal sorrindo">
+  <link rel="apple-touch-icon" href="assets/avatar-real.jpg">
   <meta name="twitter:card" content="summary">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%238B1E2D'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3ECP%3C/text%3E%3C/svg%3E">
@@ -34,8 +37,8 @@
   </script>
 
   <!-- ?v= muda a cada atualização para o navegador não usar a versão antiga guardada -->
-  <link rel="stylesheet" href="styles/style.css?v=20261105a">
-  <script src="scripts/app.js?v=20261105a" defer></script>
+  <link rel="stylesheet" href="styles/style.css?v=20261105b">
+  <script src="scripts/app.js?v=20261105b" defer></script>
 
   <script type="application/ld+json">
   {
@@ -55,6 +58,7 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <header class="navbar">
     <nav class="container nav-container" aria-label="Menu principal">
@@ -85,7 +89,7 @@
     <span class="scroll-progress" aria-hidden="true"></span>
   </header>
 
-  <main class="container">
+  <main class="container" id="conteudo" tabindex="-1">
 
     <!-- Topo: texto, celular e faixa de posts num quadrado só -->
     <section class="section screen tile hero-screen" id="inicio" aria-labelledby="hero-title">
@@ -166,15 +170,15 @@
       </div>
 
       <div class="stats">
-        <div class="stat" style="--i:0">
+        <div class="stat">
           <span class="stat-number" data-count="projects">8</span>
           <span class="stat-label">projetos no portfólio</span>
         </div>
-        <div class="stat" style="--i:1">
+        <div class="stat">
           <span class="stat-number" data-count="slides">84</span>
           <span class="stat-label">slides criados</span>
         </div>
-        <div class="stat" style="--i:2">
+        <div class="stat">
           <span class="stat-number" data-count="6">6</span>
           <span class="stat-label">tipos de serviço</span>
         </div>
@@ -579,7 +583,7 @@
           Instagram
         </a>
       </div>
-      <p class="contact-footer">© <span id="year">2026</span> Camilla Paschoal · Design de Social Media</p>
+      <footer class="contact-footer">© <span id="year">2026</span> Camilla Paschoal · Design de Social Media</footer>
     </section>
 
   </main>
