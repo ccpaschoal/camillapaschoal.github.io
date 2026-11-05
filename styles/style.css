@@ -56,8 +56,8 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-height: 72px;
 
-  --font-display: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 /* ── Modo escuro: grafite azulado (sem preto puro), céu com véu de noite ── */
