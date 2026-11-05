@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/JavaScript-1A3A52?style=for-the-badge&logo=javascript&logoColor=F1E6C8" alt="JavaScript">
 </p>
 
-Meu portfólio de **design de social media**: carrosséis, posts e identidade visual para redes sociais. O site foi feito à mão, sem frameworks, e é publicado pelo GitHub Pages.
+Meu portfólio de **design de social media**: carrosséis, posts e identidade visual para redes sociais. O site foi feito em HTML, CSS e JavaScript, sem frameworks, e é publicado pelo GitHub Pages.
 
 ## ✨ Destaques
 
