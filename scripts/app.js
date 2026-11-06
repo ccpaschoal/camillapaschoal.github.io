@@ -731,13 +731,13 @@ function initDeck() {
     navbar.style.setProperty('--progress', (current / (screens.length - 1)).toFixed(4));
   };
 
-  const go = (index, { updateHash = true } = {}) => {
+  const go = (index, { updateHash = true, fromFocus = false } = {}) => {
     const target = Math.max(0, Math.min(screens.length - 1, index));
     if (target === current && screens[current].classList.contains('is-current')) return;
     current = target;
     locked = true;
     render();
-    screens[current].scrollTop = 0;
+    if (!fromFocus) screens[current].scrollTop = 0; // vindo do Tab, o item focado continua visível
     setTimeout(() => { locked = false; }, DURATION);
     if (updateHash) {
       const id = sectionId(screens[current]);
@@ -761,7 +761,10 @@ function initDeck() {
   document.addEventListener('focusin', (event) => {
     if (lightbox.contains(event.target)) return;
     const i = screens.findIndex((screen) => screen.contains(event.target));
-    if (i >= 0 && i !== current) go(i);
+    if (i >= 0 && i !== current) {
+      go(i, { fromFocus: true });
+      event.target.scrollIntoView?.({ block: 'nearest' });
+    }
   });
 
   // A tela pode ter conteúdo maior que o quadrado (celular): primeiro rola dentro dela,
@@ -776,6 +779,7 @@ function initDeck() {
   let wheelSum = 0;
   let wheelTimer;
   window.addEventListener('wheel', (event) => {
+    if (event.ctrlKey || event.metaKey) return; // Ctrl + rodinha é o zoom do navegador
     if (lightbox.classList.contains('is-open')) return;
     if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return; // arraste lateral dos carrosséis
     const dir = Math.sign(event.deltaY);
@@ -815,6 +819,7 @@ function initDeck() {
 
   // Teclado
   document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.altKey || event.metaKey) return; // atalhos do navegador
     if (busy() || event.target.closest('input, textarea, select')) return;
     // Espaço em link ou botão é para clicar, não para trocar de tela
     if (event.key === ' ' && event.target.closest('a, button')) return;
@@ -838,6 +843,13 @@ function initDeck() {
   links.forEach((link) => {
     const id = link.getAttribute('href').slice(1);
     link.addEventListener('click', (event) => {
+      // "Pular para o conteúdo" aponta para o <main>: leva o foco para a tela que está na frente
+      if (id === 'conteudo') {
+        event.preventDefault();
+        screens[current].setAttribute('tabindex', '-1');
+        screens[current].focus({ preventScroll: true });
+        return;
+      }
       const index = id ? indexFor(id) : 0;
       if (index < 0) return;
       event.preventDefault();
