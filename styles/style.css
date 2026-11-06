@@ -271,6 +271,93 @@ h1, h2, h3 {
   background: var(--sand-200);
 }
 
+/* ── Sites (destaque do portfólio) ────────────────────────────── */
+
+.sites {
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+
+.sites-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.5vw, 28px);
+}
+
+.site-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-100);
+  border: 2px solid var(--heading);
+  box-shadow: 6px 6px 0 var(--navy-900);
+  color: var(--text);
+}
+
+.site-shot {
+  display: block;
+  overflow: hidden;
+  border-bottom: 2px solid var(--heading);
+  background: #F3EDE3;
+}
+
+.site-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.6s var(--ease);
+}
+
+.site-card:hover .site-shot img {
+  transform: scale(1.03);
+}
+
+.site-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(16px, 2vw, 22px);
+}
+
+.site-body h4 {
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+}
+
+.site-body p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.site-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.site-tags li {
+  padding: 4px 10px;
+  background: var(--sand-200);
+  color: var(--navy-800);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.site-body .btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+@media (max-width: 760px) {
+  .sites-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Navbar ───────────────────────────────────────────────────── */
 
 .navbar {

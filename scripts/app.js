@@ -459,7 +459,8 @@ function initHeroPhone() {
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   const totals = {
-    projects: document.querySelectorAll('.carousel:not(.carousel--strip):not(.carousel--panorama)').length,
+    projects: document.querySelectorAll('.carousel:not(.carousel--strip):not(.carousel--panorama)').length
+      + document.querySelectorAll('.site-card').length,
     slides: document.querySelectorAll('.carousel:not(.carousel--panorama) .rail:not(.rail--panorama) .slide').length,
   };
 
