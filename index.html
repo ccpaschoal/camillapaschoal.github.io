@@ -28,6 +28,9 @@
 
   <link rel="preload" href="assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
 
+  <!-- Segurança: só arquivos do próprio site. O hash libera apenas o script do tema abaixo (se mudar o script, gere o hash de novo) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-x842qcbN2mZ+7ZIgvmOQ8b00EGfLZee2Rib4dODedBg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+
   <!-- Aplica o tema antes de desenhar a página (evita "clarão" no modo escuro) -->
   <script>
     (function () {

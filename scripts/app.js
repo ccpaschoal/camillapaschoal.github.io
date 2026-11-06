@@ -6,19 +6,25 @@ document.documentElement.classList.add('js');
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Cada parte roda isolada: se uma quebrar (ex.: elemento removido do HTML), as outras continuam funcionando
+const safe = (nome, fn) => {
+  try { return fn(); } catch (e) { console.error(`[portfolio] ${nome}:`, e); return undefined; }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
-  initNavbar();
-  splitTitles();
-  initCarousels();
-  initGroups();
-  initCarouselDeck();
-  const openLightbox = initLightbox();
-  initMarquee(openLightbox);
-  initHeroPhone();
-  initCounters();
-  initDeck();
-  document.getElementById('year').textContent = new Date().getFullYear();
+  safe('tema', initTheme);
+  safe('menu', initNavbar);
+  safe('títulos', splitTitles);
+  safe('carrosséis', initCarousels);
+  safe('grupos', initGroups);
+  safe('deck de carrosséis', initCarouselDeck);
+  const openLightbox = safe('lightbox', initLightbox);
+  safe('faixa', () => initMarquee(openLightbox));
+  safe('celular', initHeroPhone);
+  safe('contadores', initCounters);
+  safe('deck', initDeck);
+  const ano = document.getElementById('year');
+  if (ano) ano.textContent = new Date().getFullYear();
 });
 
 /* ── Modo claro / escuro ──────────────────────────────────────── */
@@ -225,6 +231,7 @@ function initCarousels() {
 function initCoverflow(carousel) {
   // a faixa contínua da Minha Apresentação (rail--panorama) fica de fora, embaixo
   const rail = carousel.querySelector('.rail:not(.rail--panorama)');
+  if (!rail) return;
   makeCoverflow({
     rail,
     items: [...rail.querySelectorAll('.slide')],
@@ -446,7 +453,7 @@ function initMarquee(openLightbox) {
       img.fetchPriority = 'low';
 
       item.append(img);
-      item.addEventListener('click', () => openLightbox(slide, item));
+      item.addEventListener('click', () => openLightbox?.(slide, item));
       group.append(item);
     });
     return group;
@@ -605,6 +612,7 @@ function initLightbox() {
     const full = new Image();
     const target = index;
     full.onload = () => { if (target === index) image.src = full.src; };
+    full.onerror = () => { /* versão grande não carregou: continua mostrando a miniatura */ };
     full.src = fullSrc(slides[index]);
     image.alt = img.alt;
     caption.textContent = `${title} · ${index + 1} de ${slides.length}`;
