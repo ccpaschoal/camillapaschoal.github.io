@@ -36,7 +36,6 @@ function initTheme() {
     const dark = theme === 'dark';
     root.setAttribute('data-theme', theme);
     toggle.setAttribute('aria-pressed', String(dark));
-    toggle.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo escuro');
     metaColor.setAttribute('content', dark ? '#16324A' : '#6BA3D8');
   };
 
@@ -222,12 +221,18 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
   footer.className = 'cf-footer';
   footer.innerHTML = '<span class="cf-count" aria-live="polite"></span><span class="cf-bar" aria-hidden="true"><span></span></span><span class="cf-hint">arraste ou use as setas</span>';
   rail.after(footer);
-  if (!prev) {
-    prev = makeButton('prev');
-    next = makeButton('next');
-    footer.prepend(prev);
-    footer.append(next);
+  const prevs = prev ? [prev] : [];
+  const nexts = next ? [next] : [];
+  {
+    const footPrev = makeButton('prev');
+    const footNext = makeButton('next');
+    footer.prepend(footPrev);
+    footer.append(footNext);
     footer.classList.add('cf-footer--buttons');
+    // com setas no cabeçalho, as do rodapé só aparecem no celular (onde as do cabeçalho somem)
+    if (prev) footer.classList.add('cf-footer--mobile-buttons');
+    prevs.push(footPrev);
+    nexts.push(footNext);
   }
   const count = footer.querySelector('.cf-count');
   const bar = footer.querySelector('.cf-bar');
@@ -235,7 +240,7 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
   // distância (em larguras do item) e tamanho de cada posição a partir do meio
   const OFFSET = [0, 0.56, 0.98, 1.3];
   const SCALE = [1, 0.74, 0.56, 0.44];
-  const OPACITY = [1, 0.92, 0.6, 0];
+  const OPACITY = [1, 1, 0.85, 0];
   const BRIGHT = [1, 0.72, 0.58, 0.5];
 
   let current = 0;
@@ -260,8 +265,8 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
     });
     count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
     bar.style.setProperty('--cf-progress', `${((current + 1) / items.length) * 100}%`);
-    prev.disabled = current === 0;
-    next.disabled = current === items.length - 1;
+    prevs.forEach((b) => { b.disabled = current === 0; });
+    nexts.forEach((b) => { b.disabled = current === items.length - 1; });
   };
 
   const go = (index) => {
@@ -270,8 +275,8 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
     if (onChange) onChange(current, items[current]);
   };
 
-  prev.addEventListener('click', () => go(current - 1));
-  next.addEventListener('click', () => go(current + 1));
+  prevs.forEach((b) => b.addEventListener('click', () => go(current - 1)));
+  nexts.forEach((b) => b.addEventListener('click', () => go(current + 1)));
 
   // Clicar num vizinho traz ele para o meio (sem abrir a imagem); o do meio abre em tela cheia
   items.forEach((item, i) => {
@@ -373,8 +378,18 @@ function initMarquee(openLightbox) {
       img.removeAttribute('data-src');
     });
   };
-  if (document.readyState === 'complete') loadImages();
-  else window.addEventListener('load', loadImages, { once: true });
+  const whenNear = () => {
+    if (!('IntersectionObserver' in window)) return loadImages();
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        observer.disconnect();
+        loadImages();
+      }
+    }, { rootMargin: '600px 0px' });
+    observer.observe(track);
+  };
+  if (document.readyState === 'complete') whenNear();
+  else window.addEventListener('load', whenNear, { once: true });
 
   const setSpeed = () => {
     const pixelsPerSecond = 45;
@@ -428,8 +443,13 @@ function initHeroPhone() {
   // espera a página carregar para não competir com o que é mais importante
   window.addEventListener('load', () => {
     load(images[1]);
+    let paused = false;
+    phone.addEventListener('mouseenter', () => { paused = true; });
+    phone.addEventListener('mouseleave', () => { paused = false; });
+    phone.addEventListener('focusin', () => { paused = true; });
+    phone.addEventListener('focusout', () => { paused = false; });
     setInterval(() => {
-      if (!document.hidden) show((current + 1) % images.length);
+      if (!document.hidden && !paused) show((current + 1) % images.length);
     }, 2800);
   });
 }
@@ -439,8 +459,8 @@ function initHeroPhone() {
 function initCounters() {
   const counters = document.querySelectorAll('[data-count]');
   const totals = {
-    projects: document.querySelectorAll('.carousel:not(.carousel--strip)').length,
-    slides: document.querySelectorAll('.carousel .rail:not(.rail--panorama) .slide').length,
+    projects: document.querySelectorAll('.carousel:not(.carousel--strip):not(.carousel--panorama)').length,
+    slides: document.querySelectorAll('.carousel:not(.carousel--panorama) .rail:not(.rail--panorama) .slide').length,
   };
 
   counters.forEach((el) => {

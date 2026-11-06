@@ -2,6 +2,24 @@
    Camilla Paschoal · Portfólio
    ══════════════════════════════════════════════════════════════ */
 
+/* Montserrat hospedada no próprio site (mais rápido e sem enviar o IP do visitante ao Google) */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/montserrat-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/montserrat-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   /* Azuis (estrutura: textos, navbar, faixa) */
   --navy-900: #0F2A40;
@@ -1208,7 +1226,7 @@ main {
 .js .story-step .feature {
   background: var(--surface);
   border-color: var(--panel-border);
-  opacity: 0.75;
+  opacity: 0.92;
   transform: scale(0.96);
 }
 
@@ -1378,18 +1396,6 @@ main {
   border-color: var(--accent-text);
   background: var(--hover-soft);
   color: var(--accent-text);
-}
-
-/* ── Rodapé ───────────────────────────────────────────────────── */
-
-.footer {
-  padding: 28px 0;
-  background: var(--wine-800);
-  border-top: 3px solid var(--gold-400);
-  color: var(--sand-200);
-  font-size: 0.92rem;
-  font-weight: 500;
-  text-align: center;
 }
 
 /* ── Botão flutuante ──────────────────────────────────────────── */
@@ -1814,25 +1820,6 @@ main {
   align-items: stretch;
 }
 
-.hero-content.tile {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  max-width: none;
-}
-
-@media (max-width: 860px) {
-  .hero-content.tile {
-    align-items: center;
-  }
-}
-
-.hero-visual.tile {
-  display: grid;
-  place-items: center;
-}
-
 /* Sobre: foto, texto e cada número em seu quadrado */
 .about {
   gap: var(--tile-gap);
@@ -1845,22 +1832,10 @@ main {
   place-items: center;
 }
 
-.about-content.tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 .stats {
   gap: var(--tile-gap);
   max-width: none;
   margin-top: var(--tile-gap);
-}
-
-.stat.tile {
-  padding: 28px 16px;
-  border-top: 3px solid var(--gold-400);
-  text-align: center;
 }
 
 /* Portfólio: cada carrossel é um quadrado independente */
@@ -1872,11 +1847,6 @@ main {
 
 .services-grid {
   gap: var(--tile-gap);
-}
-
-.service-card.tile {
-  padding: 28px;
-  border-top: 4px solid var(--wine-700);
 }
 
 /* ── Slides como garrafas: o do meio grande, os vizinhos menores e juntinhos ── */
@@ -2025,10 +1995,6 @@ main {
   .stats {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
-  }
-
-  .stat.tile {
-    padding: 18px 8px;
   }
 
   .stat-label {
@@ -2254,6 +2220,17 @@ html.deck-on,
 .cf-footer--buttons .carousel-btn {
   width: 40px;
   height: 40px;
+}
+
+/* setas extras do rodapé: só no celular, onde as do cabeçalho ficam escondidas */
+.cf-footer--mobile-buttons .carousel-btn {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .cf-footer--mobile-buttons .carousel-btn {
+    display: grid;
+  }
 }
 
 /* Contato: rodapé dentro do quadrado */
