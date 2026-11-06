@@ -580,6 +580,13 @@ h1, h2, h3 {
   background: var(--hover-soft);
 }
 
+.nav-logo-img {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  object-fit: cover;
+}
+
 .linkedin-icon {
   display: grid;
   place-items: center;
