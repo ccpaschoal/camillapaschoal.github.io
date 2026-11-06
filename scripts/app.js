@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   splitTitles();
   initCarousels();
   initGroups();
+  initCarouselDeck();
   const openLightbox = initLightbox();
   initMarquee(openLightbox);
   initHeroPhone();
@@ -127,6 +128,89 @@ function splitTitles() {
     reader.textContent = text;
     title.replaceChildren(reader, ...words.flatMap((w, i) => (i ? [' ', w] : [w])));
     title.classList.add('is-split');
+  });
+}
+
+/* ── Baralho de carrosséis: todos juntos, abre um por vez ──────── */
+
+function initCarouselDeck() {
+  const deck = document.querySelector('.carousel-deck');
+  if (!deck) return;
+  const viewer = deck.querySelector('.deck-viewer');
+  const items = [...viewer.querySelectorAll('.deck-item')];
+  if (!items.length) return;
+  const meta = deck.querySelector('.deck-meta');
+  const metaText = meta.textContent;
+
+  // as cartas do baralho: a capa de cada carrossel
+  const cards = document.createElement('div');
+  cards.className = 'deck-cards';
+  const middle = (items.length - 1) / 2;
+  const cardButtons = items.map((item, i) => {
+    const title = item.querySelector('h3').textContent;
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'deck-card';
+    card.style.setProperty('--o', (i - middle).toFixed(2));
+    card.style.setProperty('--a', Math.abs(i - middle).toFixed(2));
+    card.style.zIndex = items.length - i;
+    card.setAttribute('aria-label', `Abrir o carrossel ${title}`);
+    const img = document.createElement('img');
+    img.src = item.querySelector('.slide img').getAttribute('src');
+    img.alt = '';
+    img.width = 640;
+    img.height = 640;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    const label = document.createElement('span');
+    label.className = 'deck-card-title';
+    label.textContent = title;
+    card.append(img, label);
+    card.addEventListener('click', () => open(i));
+    cards.append(card);
+    return card;
+  });
+  viewer.before(cards);
+
+  // barra de navegação quando um carrossel está aberto
+  const bar = document.createElement('div');
+  bar.className = 'deck-bar';
+  bar.innerHTML = `
+    <button type="button" class="btn btn-outline deck-back"><svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Voltar ao baralho</button>
+    <span class="deck-count" aria-live="polite"></span>
+    <button type="button" class="btn btn-primary deck-next">Próximo carrossel<svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`;
+  viewer.before(bar);
+  const count = bar.querySelector('.deck-count');
+
+  let current = -1;
+  const refresh = () => window.dispatchEvent(new Event('resize')); // recalcula garrafas e a tela
+
+  const open = (index) => {
+    current = (index + items.length) % items.length;
+    deck.classList.add('is-open');
+    items.forEach((item, i) => item.classList.toggle('is-shown', i === current));
+    count.textContent = `${current + 1} de ${items.length}`;
+    meta.textContent = 'Arraste ou use as setas para ver os slides';
+    refresh();
+    items[current].querySelector('.slide')?.focus({ preventScroll: true });
+  };
+
+  const close = () => {
+    deck.classList.remove('is-open');
+    items.forEach((item) => item.classList.remove('is-shown'));
+    meta.textContent = metaText;
+    refresh();
+    cardButtons[Math.max(current, 0)].focus({ preventScroll: true });
+  };
+
+  bar.querySelector('.deck-back').addEventListener('click', close);
+  bar.querySelector('.deck-next').addEventListener('click', () => open(current + 1));
+  deck.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && deck.classList.contains('is-open')) {
+      const lightbox = document.getElementById('lightbox');
+      if (lightbox && lightbox.classList.contains('is-open')) return;
+      close();
+    }
   });
 }
 

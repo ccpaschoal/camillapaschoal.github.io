@@ -358,6 +358,175 @@ h1, h2, h3 {
   }
 }
 
+/* ferramentas no Sobre */
+.about-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px 10px;
+  margin-top: 14px;
+}
+
+.about-tools-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.about-tools .site-tags {
+  margin: 0;
+}
+
+/* ── Baralho de carrosséis ────────────────────────────────────── */
+
+/* sem JS, os carrosséis aparecem um embaixo do outro */
+.deck-item + .deck-item {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.js .carousel-deck .deck-item {
+  display: none;
+}
+
+.js .carousel-deck.is-open .deck-item.is-shown {
+  display: block;
+  margin-top: 0;
+}
+
+.deck-cards {
+  --spread: clamp(26px, 6vw, 72px);
+  --card: clamp(150px, 24vw, 250px);
+  position: relative;
+  height: calc(var(--card) * 1.55);
+  margin: 4px 0 6px;
+}
+
+.carousel-deck.is-open .deck-cards {
+  display: none;
+}
+
+.deck-card {
+  --lift: 0px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--card);
+  aspect-ratio: 1;
+  padding: 0;
+  overflow: hidden;
+  background: var(--gray-100);
+  border: 2px solid var(--heading);
+  box-shadow: 4px 4px 0 var(--navy-900);
+  cursor: pointer;
+  /* fechado: as cartas empilhadas, só um pouquinho tortas */
+  translate: calc(-50% + var(--o) * 3px) calc(-50% + var(--a) * 1px - var(--lift));
+  rotate: calc(var(--o) * 1.5deg);
+  transition: translate 0.5s var(--ease), rotate 0.5s var(--ease), scale 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.deck-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* mouse em cima do baralho (ou foco pelo teclado): as cartas abrem em leque */
+.deck-cards:hover .deck-card,
+.deck-cards:focus-within .deck-card {
+  translate: calc(-50% + var(--o) * var(--spread)) calc(-50% + var(--a) * var(--a) * 3px - var(--lift));
+  rotate: calc(var(--o) * 5deg);
+}
+
+.deck-card:hover,
+.deck-card:focus-visible {
+  --lift: 26px;
+  z-index: 50 !important;
+  scale: 1.06;
+  box-shadow: 8px 8px 0 var(--navy-900);
+}
+
+.deck-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.deck-card-title {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 8px 10px;
+  background: var(--wine-700);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  translate: 0 100%;
+  transition: opacity 0.25s var(--ease), translate 0.25s var(--ease);
+}
+
+.deck-card:hover .deck-card-title,
+.deck-card:focus-visible .deck-card-title {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.deck-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.carousel-deck.is-open .deck-bar {
+  display: flex;
+}
+
+.deck-bar .btn {
+  min-height: 42px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+.deck-count {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* celular: sem mouse, o leque já fica aberto e cada toque abre o carrossel */
+@media (hover: none) {
+  .deck-card {
+    translate: calc(-50% + var(--o) * var(--spread)) calc(-50% + var(--a) * var(--a) * 3px);
+    rotate: calc(var(--o) * 5deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .deck-cards {
+    --spread: 18px;
+    --card: 150px;
+  }
+
+  .deck-bar .btn {
+    padding: 8px 12px;
+  }
+
+  .deck-bar .deck-next {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .deck-bar .deck-next .btn-arrow {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 /* ── Navbar ───────────────────────────────────────────────────── */
 
 .navbar {
@@ -1756,6 +1925,10 @@ body.no-scroll {
   .about {
     justify-items: center;
     text-align: center;
+  }
+
+  .about-tools {
+    justify-content: center;
   }
 
   /* No celular o efeito de celular fixo não cabe: vira uma lista normal */
