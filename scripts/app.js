@@ -22,7 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
   safe('faixa', () => initMarquee(openLightbox));
   safe('celular', initHeroPhone);
   safe('contadores', initCounters);
-  safe('deck', initDeck);
+  if (safe('deck', () => { initDeck(); return true; }) !== true) {
+    // sem o deck, o CSS do modo .js deixaria cartões e títulos invisíveis: volta para a página simples
+    document.documentElement.classList.remove('js', 'deck-on');
+  }
   const ano = document.getElementById('year');
   if (ano) ano.textContent = new Date().getFullYear();
 });
@@ -71,9 +74,9 @@ function initNavbar() {
 
   const setOpen = (open) => {
     menu.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+    toggle.setAttribute('aria-expanded', String(open)); // rótulo fixo ("Menu"); o estado aberto/fechado vai aqui
   };
+  toggle.setAttribute('aria-label', 'Menu');
 
   toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
 
@@ -415,7 +418,8 @@ function makeCoverflow({ rail, items, prev, next, word, autoHeight = false, clic
   rail.addEventListener('pointercancel', end);
   rail.addEventListener('pointerleave', () => { if (startX !== null) end(); });
 
-  window.addEventListener('resize', render);
+  let quadro = 0; // no máximo um cálculo por quadro enquanto a janela muda de tamanho
+  window.addEventListener('resize', () => { cancelAnimationFrame(quadro); quadro = requestAnimationFrame(render); });
   window.addEventListener('load', render);
   go(start);
 }
@@ -462,6 +466,29 @@ function initMarquee(openLightbox) {
   // Dois grupos iguais: quando o primeiro sai da tela, o segundo ocupa o lugar e o loop não tem emenda
   track.append(buildGroup(), buildGroup());
 
+  // Botão para parar o movimento da faixa e do celular (conteúdo que se move sozinho precisa poder ser pausado)
+  const marquee = track.closest('.marquee');
+  if (marquee && !reduceMotion) {
+    marquee.removeAttribute('aria-hidden');
+    track.setAttribute('aria-hidden', 'true'); // só a faixa é decorativa; o botão é lido
+    const pauseBtn = document.createElement('button');
+    pauseBtn.type = 'button';
+    pauseBtn.className = 'motion-pause';
+    const PAUSA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>';
+    const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>';
+    const mostra = (parado) => {
+      pauseBtn.setAttribute('aria-pressed', String(parado));
+      pauseBtn.setAttribute('aria-label', parado ? 'Continuar animações' : 'Pausar animações');
+      pauseBtn.innerHTML = parado ? PLAY : PAUSA;
+    };
+    mostra(false);
+    pauseBtn.addEventListener('click', () => {
+      const parado = document.documentElement.classList.toggle('motion-paused');
+      mostra(parado);
+    });
+    marquee.append(pauseBtn);
+  }
+
   // Baixa as minis depois que o essencial da página carregou
   const loadImages = () => {
     track.querySelectorAll('img[data-src]').forEach((img) => {
@@ -487,7 +514,8 @@ function initMarquee(openLightbox) {
     track.style.setProperty('--marquee-duration', `${track.scrollWidth / 2 / pixelsPerSecond}s`);
   };
   setSpeed();
-  window.addEventListener('resize', setSpeed);
+  let quadro = 0;
+  window.addEventListener('resize', () => { cancelAnimationFrame(quadro); quadro = requestAnimationFrame(setSpeed); });
 }
 
 /* ── Celular do topo: troca as capas como num feed ────────────── */
@@ -532,6 +560,13 @@ function initHeroPhone() {
   if (reduceMotion) return;
 
   // espera a página carregar para não competir com o que é mais importante
+  // O botão de pausa fica na faixa de posts (initMarquee) e para o celular também
+  const stopped = () => document.documentElement.classList.contains('motion-paused');
+
+  // Fora da tela do topo, o celular não troca de post (não gasta processamento à toa)
+  let offscreen = false;
+  document.addEventListener('screenchange', (e) => { offscreen = !e.detail.screen.contains(phone); });
+
   window.addEventListener('load', () => {
     load(images[1]);
     let paused = false;
@@ -540,7 +575,7 @@ function initHeroPhone() {
     phone.addEventListener('focusin', () => { paused = true; });
     phone.addEventListener('focusout', () => { paused = false; });
     setInterval(() => {
-      if (!document.hidden && !paused) show((current + 1) % images.length);
+      if (!document.hidden && !paused && !stopped() && !offscreen) show((current + 1) % images.length);
     }, 2800);
   });
 }
@@ -558,6 +593,12 @@ function initCounters() {
   counters.forEach((el) => {
     if (el.dataset.count in totals) el.dataset.count = totals[el.dataset.count];
     el.textContent = reduceMotion ? el.dataset.count : '0';
+    // a contagem é só visual: o leitor de tela lê o número final num texto escondido ao lado
+    el.setAttribute('aria-hidden', 'true');
+    const leitor = document.createElement('span');
+    leitor.className = 'sr-only';
+    leitor.textContent = el.dataset.count;
+    el.after(leitor);
   });
 
   if (reduceMotion) return;
@@ -704,13 +745,22 @@ function initDeck() {
 
   let current = 0;
   let locked = false;
+  let lockTimer = 0;
+  let animTimer = 0;
+  let announce = false;
+  // leitor de tela: anuncia a tela que veio para a frente
+  const voice = document.createElement('p');
+  voice.className = 'sr-only';
+  voice.setAttribute('aria-live', 'polite');
+  document.body.append(voice);
 
   const sectionId = (screen) => screen.closest('section[id]')?.id || screen.id;
 
   const render = () => {
     const vh = window.innerHeight;
     const gap = window.innerWidth <= 600 ? 14 : 22;
-    const curHeight = screens[current].offsetHeight;
+    const heights = screens.map((s) => s.offsetHeight); // todas as leituras antes das escritas
+    const curHeight = heights[current];
 
     screens.forEach((screen, i) => {
       const d = i - current;
@@ -718,7 +768,7 @@ function initDeck() {
       let y = 0;
       if (ad === 1) {
         // encosta logo depois da tela atual, deixando só a ponta à mostra
-        y = Math.sign(d) * (curHeight / 2 + gap + (screen.offsetHeight * SCALE[1]) / 2);
+        y = Math.sign(d) * (curHeight / 2 + gap + (heights[i] * SCALE[1]) / 2);
       } else if (ad === 2) {
         y = Math.sign(d) * vh;
       }
@@ -743,10 +793,20 @@ function initDeck() {
     const target = Math.max(0, Math.min(screens.length - 1, index));
     if (target === current && screens[current].classList.contains('is-current')) return;
     current = target;
-    locked = true;
+    locked = announce; // a primeira tela (ao abrir a página) não trava as setas
+    root.classList.add('is-animating');
     render();
     if (!fromFocus) screens[current].scrollTop = 0; // vindo do Tab, o item focado continua visível
-    setTimeout(() => { locked = false; }, DURATION);
+    // cancela o timer da troca anterior: senão ele destrava no meio desta animação
+    clearTimeout(lockTimer);
+    clearTimeout(animTimer);
+    lockTimer = setTimeout(() => { locked = false; }, DURATION);
+    animTimer = setTimeout(() => root.classList.remove('is-animating'), DURATION + 50);
+    if (announce) {
+      const nome = (screens[current].querySelector('h1, h2')?.textContent || '').replace(/\s+/g, ' ').trim();
+      voice.textContent = `Tela ${current + 1} de ${screens.length}${nome ? `: ${nome}` : ''}`;
+    }
+    announce = true;
     if (updateHash) {
       const id = sectionId(screens[current]);
       history.replaceState(null, '', id && current > 0 ? `#${id}` : location.pathname + location.search);

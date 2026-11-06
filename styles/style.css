@@ -2171,8 +2171,8 @@ main {
   margin-left: calc(var(--cf-size) / -2);
   box-shadow: var(--shadow-lg);
   transform-origin: 50% 50%;
-  transition: transform 0.6s var(--ease), opacity 0.6s var(--ease), filter 0.6s var(--ease);
-  will-change: transform;
+  /* filter fora da transição; will-change só durante a troca de tela (camadas demais pesam no celular) */
+  transition: transform 0.6s var(--ease), opacity 0.6s var(--ease);
 }
 
 .cf-rail .slide img {
@@ -2387,9 +2387,22 @@ html.deck-on,
   scrollbar-color: var(--wine-700) transparent;
   transform: translate(-50%, -50%);
   transform-origin: 50% 50%;
-  transition: transform 0.85s var(--ease), opacity 0.85s var(--ease), filter 0.85s var(--ease);
-  will-change: transform;
+  transition: transform 0.85s var(--ease), opacity 0.85s var(--ease);
 }
+.is-animating .deck-on .screen, .deck-on.is-animating .screen { will-change: transform; }
+/* animações infinitas só rodam na tela da frente; e o botão de pausa do celular para tudo que se move */
+.deck-on .screen:not(.is-current) *,
+.motion-paused .marquee-track,
+.motion-paused .hero-phone * { animation-play-state: paused !important; }
+.marquee { position: relative; }
+.motion-pause {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: rgba(0, 0, 0, .6); color: #fff;
+}
+.motion-pause svg { width: 18px; height: 18px; fill: currentColor; }
+.motion-pause:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px #000; }
 
 /* telas vizinhas: só a ponta aparece, sem rolagem própria */
 .deck-on .screen.is-near {
@@ -2478,8 +2491,8 @@ html.deck-on,
 }
 
 .cf-footer--buttons .carousel-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px; /* alvo de toque mínimo recomendado */
+  height: 44px;
 }
 
 /* setas extras do rodapé: só no celular, onde as do cabeçalho ficam escondidas */
